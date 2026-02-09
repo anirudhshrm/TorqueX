@@ -3,7 +3,7 @@ services:
   - type: web
     name: torquex-web
     runtime: node
-    buildCommand: npm install && npm run prisma:generate
+    buildCommand: npm install && npm run prisma:generate && npx prisma db push --skip-generate --accept-data-loss
     startCommand: npm run start:no-clerk
     envVars:
       - key: NODE_ENV
