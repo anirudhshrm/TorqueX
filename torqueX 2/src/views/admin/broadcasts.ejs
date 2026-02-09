@@ -1,0 +1,242 @@
+<%- include('../partials/header') %>
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 text-white">
+      <div class="p-4 bg-gray-900">
+        <h2 class="text-xl font-bold">TorqueX Admin</h2>
+      </div>
+      <nav class="p-2">
+        <ul class="space-y-1">
+          <li>
+            <a href="/admin/dashboard" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="/admin/stats" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Statistics
+            </a>
+          </li>
+          <li>
+            <a href="/admin/vehicles" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              Vehicles
+            </a>
+          </li>
+          <li>
+            <a href="/admin/bookings" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Bookings
+            </a>
+          </li>
+          <li>
+            <a href="/admin/broadcasts" class="flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+              </svg>
+              Broadcasts
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 bg-gray-900 overflow-y-auto">
+      <div class="p-6">
+        <h1 class="text-2xl font-bold text-white mb-6">Manage Broadcasts</h1>
+
+        <!-- Create Broadcast Form -->
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+          <h2 class="text-lg font-semibold text-white mb-4">Create New Broadcast</h2>
+          <form id="broadcast-form" action="/admin/broadcasts" method="POST" class="space-y-4">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div>
+              <label for="title" class="block text-sm font-medium text-gray-200">Title</label>
+              <input type="text" id="title" name="title"
+                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                placeholder="Announcement Title">
+            </div>
+            <div>
+              <label for="message" class="block text-sm font-medium text-gray-200">Broadcast Message</label>
+              <textarea id="message" name="message" rows="3"
+                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                required></textarea>
+            </div>
+            <div>
+              <label for="userTarget" class="block text-sm font-medium text-gray-200">Target Users</label>
+              <select id="userTarget" name="userTarget"
+                class="mt-1 block w-full rounded-md border-gray-600 bg-gray-700 text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                <option value="ALL">All Users</option>
+                <option value="USER">Regular Users Only</option>
+                <option value="ADMIN">Admins Only</option>
+              </select>
+            </div>
+            <div class="flex justify-end mt-4 md:mt-6 lg:mt-8">
+
+              <button type="submit"
+                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Send Broadcast
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Broadcasts List -->
+        <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-700">
+            <h2 class="text-lg font-semibold text-white">Recent Broadcasts</h2>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-700">
+              <thead class="bg-gray-700">
+                <tr>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Message</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Admin</th>
+                  <th scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
+                </tr>
+              </thead>
+              <tbody class="bg-gray-700 divide-y divide-gray-600">
+                <% if (broadcasts && broadcasts.length> 0) { %>
+                  <% broadcasts.forEach(broadcast=> { %>
+                    <tr>
+                      <td class="px-6 py-4 text-sm text-gray-100">
+                        <%= broadcast.message %>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        Admin
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                        <%= new Date(broadcast.createdAt).toLocaleString() %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="3" class="px-6 py-4 whitespace-nowrap text-sm text-gray-400 text-center">
+                            No broadcasts yet
+                          </td>
+                        </tr>
+                        <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Socket.io (reuse global socket if available)
+    if (!window.socket) {
+      window.socket = io();
+    }
+    const socket = window.socket;
+
+    document.getElementById('broadcast-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const message = document.getElementById('message').value;
+      const userTarget = document.getElementById('userTarget').value;
+
+      if (!message) {
+        alert('Please enter a broadcast message');
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = 'Sending...';
+      submitBtn.disabled = true;
+
+      try {
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+        const response = await fetch('/admin/broadcasts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+          },
+          body: JSON.stringify({
+            title,
+            message,
+            userTarget
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Show success message
+          alert('Broadcast sent successfully');
+
+          // Reset form
+          document.getElementById('title').value = '';
+          document.getElementById('message').value = '';
+          document.getElementById('userTarget').value = 'ALL';
+
+          // Add the new broadcast to the table without reloading the page
+          const table = document.querySelector('tbody');
+          const newRow = document.createElement('tr');
+          const timestamp = new Date().toLocaleString();
+
+          newRow.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-100">
+            ${message}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+            Admin
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+            ${timestamp}
+          </td>
+        `;
+
+          if (table.querySelector('td[colspan="3"]')) {
+            // Remove the "No broadcasts yet" row if it exists
+            table.innerHTML = '';
+          }
+
+          table.prepend(newRow);
+        } else {
+          alert(`Error: ${data.error || data.message || 'Could not send broadcast'}`);
+        }
+      } catch (error) {
+        console.error('Error sending broadcast:', error);
+        alert('Failed to send broadcast. Please try again.');
+      } finally {
+        // Reset button state
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+
+  <%- include('../partials/footer') %>

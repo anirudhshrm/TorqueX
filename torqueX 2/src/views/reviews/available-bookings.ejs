@@ -1,0 +1,70 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-12">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 dark:text-white">Leave a Review</h1>
+    
+    <% if (bookings && bookings.length > 0) { %>
+      <div class="grid gap-6">
+        <% bookings.forEach(booking => { %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="h-20 w-20 rounded-md flex-shrink-0 overflow-hidden">
+                  <img 
+                    src="<%= booking.vehicle.images && booking.vehicle.images.length > 0 ? booking.vehicle.images[0] : '/images/placeholder-car.jpg' %>" 
+                    alt="<%= booking.vehicle.name %>" 
+                    class="h-full w-full object-cover"
+                    onerror="this.src='/images/placeholder-car.jpg'; this.onerror=null;"
+                  >
+                </div>
+                <div class="ml-4">
+                  <div class="text-xl font-bold text-gray-900 dark:text-white">
+                    <%= booking.vehicle.make %> <%= booking.vehicle.model %> <%= booking.vehicle.year %>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Rental Period: <%= new Date(booking.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %> - <%= new Date(booking.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                  </div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Total: $<%= booking.totalAmount %>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded mb-2">
+                  <%= booking.status %>
+                </span>
+                <a 
+                  href="/reviews/create/<%= booking.id %>" 
+                  class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
+                >
+                  Write Review
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+        <div class="max-w-md mx-auto">
+          <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No Bookings to Review</h3>
+          <p class="text-gray-500 dark:text-gray-400 mb-6">
+            You don't have any completed bookings that are available for review. Complete a rental first, then come back to share your experience!
+          </p>
+          <a 
+            href="/vehicles" 
+            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300 inline-block"
+          >
+            Browse Vehicles
+          </a>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

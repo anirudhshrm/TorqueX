@@ -1,0 +1,153 @@
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold mb-12 text-center dark:text-white">Frequently Asked Questions</h2>
+    
+    <div class="max-w-3xl mx-auto" x-data="{active: null}">
+      <!-- FAQ Item 1 -->
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <button 
+          @click="active !== 1 ? active = 1 : active = null" 
+          class="flex justify-between items-center w-full py-4 text-left font-medium text-gray-800 dark:text-gray-200"
+        >
+          <span>What documents do I need to rent a vehicle?</span>
+          <svg 
+            class="h-6 w-6 text-gray-500 transform transition-transform duration-200" 
+            :class="{'rotate-180': active === 1}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div 
+          x-show="active === 1" 
+          x-transition:enter="transition ease-out duration-200" 
+          x-transition:enter-start="opacity-0 transform -translate-y-4" 
+          x-transition:enter-end="opacity-100 transform translate-y-0"
+          class="pb-4 text-gray-600 dark:text-gray-400">
+        >
+          <p>You will need a valid driver's license, a credit card in your name, and proof of insurance. International renters may need additional documentation such as an International Driving Permit.</p>
+        </div>
+      </div>
+      
+      <!-- FAQ Item 2 -->
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <button 
+          @click="active !== 2 ? active = 2 : active = null" 
+          class="flex justify-between items-center w-full py-4 text-left font-medium text-gray-800 dark:text-gray-200">
+        >
+          <span>What is the minimum age to rent a vehicle?</span>
+          <svg 
+            class="h-6 w-6 text-gray-500 transform transition-transform duration-200" 
+            :class="{'rotate-180': active === 2}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div 
+          x-show="active === 2" 
+          x-transition:enter="transition ease-out duration-200" 
+          x-transition:enter-start="opacity-0 transform -translate-y-4" 
+          x-transition:enter-end="opacity-100 transform translate-y-0"
+          class="pb-4 text-gray-600 dark:text-gray-400">
+        >
+          <p>The minimum age to rent a standard vehicle is 21 years. For luxury and sports vehicles, the minimum age is 25 years. Additional fees may apply for drivers under 25.</p>
+        </div>
+      </div>
+      
+      <!-- FAQ Item 3 -->
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <button 
+          @click="active !== 3 ? active = 3 : active = null" 
+          class="flex justify-between items-center w-full py-4 text-left font-medium text-gray-800 dark:text-gray-200"
+        >
+          <span>How do I cancel or modify my reservation?</span>
+          <svg 
+            class="h-6 w-6 text-gray-500 transform transition-transform duration-200" 
+            :class="{'rotate-180': active === 3}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div 
+          x-show="active === 3" 
+          x-transition:enter="transition ease-out duration-200" 
+          x-transition:enter-start="opacity-0 transform -translate-y-4" 
+          x-transition:enter-end="opacity-100 transform translate-y-0"
+          class="pb-4 text-gray-600 dark:text-gray-400">
+        >
+          <p>You can cancel or modify your reservation through your account dashboard. Cancellations made at least 24 hours before the pickup time receive a full refund. Changes to your reservation are subject to vehicle availability and may result in price adjustments.</p>
+        </div>
+      </div>
+      
+      <!-- FAQ Item 4 -->
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <button 
+          @click="active !== 4 ? active = 4 : active = null" 
+          class="flex justify-between items-center w-full py-4 text-left font-medium text-gray-800 dark:text-gray-200"
+        >
+          <span>Is insurance included in the rental price?</span>
+          <svg 
+            class="h-6 w-6 text-gray-500 transform transition-transform duration-200" 
+            :class="{'rotate-180': active === 4}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div 
+          x-show="active === 4" 
+          x-transition:enter="transition ease-out duration-200" 
+          x-transition:enter-start="opacity-0 transform -translate-y-4" 
+          x-transition:enter-end="opacity-100 transform translate-y-0"
+          class="pb-4 text-gray-600 dark:text-gray-400">
+        >
+          <p>Basic liability insurance is included in the rental price. We offer additional coverage options for comprehensive protection, including collision damage waiver, personal accident insurance, and theft protection, which can be added during the booking process.</p>
+        </div>
+      </div>
+      
+      <!-- FAQ Item 5 -->
+      <div class="border-b border-gray-200 dark:border-gray-700">
+        <button 
+          @click="active !== 5 ? active = 5 : active = null" 
+          class="flex justify-between items-center w-full py-4 text-left font-medium text-gray-800 dark:text-gray-200"
+        >
+          <span>What happens if I return the vehicle late?</span>
+          <svg 
+            class="h-6 w-6 text-gray-500 transform transition-transform duration-200" 
+            :class="{'rotate-180': active === 5}"
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div 
+          x-show="active === 5" 
+          x-transition:enter="transition ease-out duration-200" 
+          x-transition:enter-start="opacity-0 transform -translate-y-4" 
+          x-transition:enter-end="opacity-100 transform translate-y-0"
+          class="pb-4 text-gray-600 dark:text-gray-400">
+        >
+          <p>Late returns are subject to additional charges. We provide a 30-minute grace period, after which you will be charged for an additional day. If you know you'll be late, please contact customer service as soon as possible to extend your rental.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- More Questions -->
+    <div class="text-center mt-10">
+      <p class="text-gray-600 dark:text-gray-400 mb-4">Have more questions? We're here to help.</p>
+      <a href="/contact" class="inline-block bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition duration-300">Contact Us</a>
+    </div>
+  </div>
+</section>

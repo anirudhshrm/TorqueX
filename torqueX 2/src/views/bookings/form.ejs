@@ -1,0 +1,294 @@
+<%- include('../partials/header') %>
+
+<div class="bg-gray-50 min-h-screen py-12" data-vehicle-price="<%= vehicle.pricePerDay %>">
+  <div class="container mx-auto px-4">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-2">Book Your Vehicle</h1>
+        <p class="text-gray-600 mb-8">Complete your booking details below</p>
+
+        <!-- Vehicle Info -->
+        <% if (vehicle) { %>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <div class="flex items-start gap-4">
+              <% if (vehicle.images && vehicle.images[0]) { %>
+                <img src="<%= vehicle.images[0] %>" alt="<%= vehicle.name %>" class="w-24 h-24 object-cover rounded">
+              <% } else { %>
+                <div class="w-24 h-24 bg-gray-300 rounded flex items-center justify-center">
+                  <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                  </svg>
+                </div>
+              <% } %>
+              <div>
+                <h3 class="text-2xl font-bold"><%= vehicle.name %></h3>
+                <p class="text-gray-600"><%= vehicle.type %></p>
+                <p class="text-blue-600 font-bold text-lg mt-2">$<%= vehicle.pricePerDay %> per day</p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+
+        <!-- Booking Form -->
+        <form id="bookingForm" method="POST" action="/bookings" class="space-y-6">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="vehicleId" value="<%= vehicleId %>">
+
+          <!-- Start Date -->
+          <div>
+            <label for="startDate" class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+            <input
+              type="datetime-local"
+              id="startDate"
+              name="startDate"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              min="<%= new Date().toISOString().slice(0, 16) %>"
+            >
+            <p class="text-xs text-gray-500 mt-1">When do you want to pick up the vehicle?</p>
+          </div>
+
+          <!-- End Date -->
+          <div>
+            <label for="endDate" class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+            <input
+              type="datetime-local"
+              id="endDate"
+              name="endDate"
+              required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              min="<%= new Date(Date.now() + 86400000).toISOString().slice(0, 16) %>"
+            >
+            <p class="text-xs text-gray-500 mt-1">When do you want to return the vehicle?</p>
+          </div>
+
+          <!-- Duration and Total Price (calculated) -->
+          <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="flex justify-between mb-3">
+              <span class="text-gray-700">Rental Duration:</span>
+              <span class="font-semibold"><span id="duration">0</span> days</span>
+            </div>
+            <div class="flex justify-between text-lg font-bold">
+              <span>Total Price:</span>
+              <span class="text-blue-600">$<span id="totalPrice">0</span></span>
+            </div>
+          </div>
+
+          <!-- Special Requests -->
+          <div>
+            <label for="specialRequests" class="block text-sm font-medium text-gray-700 mb-2">Special Requests (Optional)</label>
+            <textarea
+              id="specialRequests"
+              name="specialRequests"
+              rows="3"
+              placeholder="Any special requirements or requests?"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            ></textarea>
+          </div>
+
+          <!-- Promo Code -->
+          <div>
+            <label for="promoCode" class="block text-sm font-medium text-gray-700 mb-2">Promo Code (Optional)</label>
+            <div class="flex gap-2">
+              <input
+                type="text"
+                id="promoCode"
+                name="promoCode"
+                placeholder="Enter promo code"
+                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+              <button
+                type="button"
+                id="applyPromo"
+                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+              >
+                Apply
+              </button>
+            </div>
+            <p id="promoMessage" class="text-xs mt-1"></p>
+          </div>
+
+          <!-- Terms and Conditions -->
+          <div class="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="terms"
+              name="terms"
+              required
+              class="mt-1"
+            >
+            <label for="terms" class="text-sm text-gray-700">
+              I agree to the <a href="/terms" class="text-blue-600 hover:underline">Terms and Conditions</a> and <a href="/privacy" class="text-blue-600 hover:underline">Privacy Policy</a>
+            </label>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-4">
+            <a href="/vehicles/<%= vehicleId %>" class="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition text-center">
+              Cancel
+            </a>
+            <button
+              type="submit"
+              class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition"
+            >
+              Continue to Payment
+            </button>
+          </div>
+        </form>
+
+        <!-- Insurance and Fees Info -->
+        <div class="mt-8 pt-8 border-t border-gray-200">
+          <h3 class="text-lg font-semibold mb-4">Included & Optional Services</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <p class="font-medium">Free Cancellation</p>
+                <p class="text-sm text-gray-600">Cancel up to 24 hours before pickup</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <p class="font-medium">Unlimited Mileage</p>
+                <p class="text-sm text-gray-600">Drive without worrying about distance</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <p class="font-medium">Full Insurance</p>
+                <p class="text-sm text-gray-600">Damage protection included (optional add-on)</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <div>
+                <p class="font-medium">24/7 Support</p>
+                <p class="text-sm text-gray-600">Call us anytime during your rental</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const vehiclePrice = parseFloat(document.querySelector('[data-vehicle-price]').getAttribute('data-vehicle-price'));
+  const startDateInput = document.getElementById('startDate');
+  const endDateInput = document.getElementById('endDate');
+  const durationSpan = document.getElementById('duration');
+  const totalPriceSpan = document.getElementById('totalPrice');
+  const bookingForm = document.getElementById('bookingForm');
+
+  function calculatePrice() {
+    if (startDateInput.value && endDateInput.value) {
+      const startDate = new Date(startDateInput.value);
+      const endDate = new Date(endDateInput.value);
+      
+      if (endDate > startDate) {
+        const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+        const totalPrice = days * vehiclePrice;
+        
+        durationSpan.textContent = days;
+        totalPriceSpan.textContent = totalPrice.toFixed(2);
+      }
+    }
+  }
+
+  startDateInput.addEventListener('change', calculatePrice);
+  endDateInput.addEventListener('change', calculatePrice);
+
+  // Set minimum end date when start date changes
+  startDateInput.addEventListener('change', function() {
+    const startDate = new Date(this.value);
+    startDate.setDate(startDate.getDate() + 1);
+    endDateInput.min = startDate.toISOString().slice(0, 16);
+  });
+
+  // Handle form submission
+  bookingForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = {
+      _csrf: formData.get('_csrf'),
+      vehicleId: formData.get('vehicleId'),
+      startDate: formData.get('startDate'),
+      endDate: formData.get('endDate')
+    };
+
+    fetch('/bookings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-csrf-token': formData.get('_csrf')
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = data.redirectUrl;
+      } else {
+        alert('Error: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while creating the booking');
+    });
+  });
+
+  // Apply promo code
+  document.getElementById('applyPromo').addEventListener('click', function() {
+    const promoCode = document.getElementById('promoCode').value;
+    const promoMessage = document.getElementById('promoMessage');
+    
+    if (!promoCode) {
+      promoMessage.textContent = 'Please enter a promo code';
+      promoMessage.className = 'text-xs mt-1 text-red-600';
+      return;
+    }
+
+    // In a real app, validate promo code with backend
+    fetch(`/deals/validate-code?code=${promoCode}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          promoMessage.textContent = `Promo code applied! You save $${data.discount}`;
+          promoMessage.className = 'text-xs mt-1 text-green-600';
+          
+          // Update total price with discount
+          const currentTotal = parseFloat(totalPriceSpan.textContent);
+          const discountedTotal = currentTotal - data.discount;
+          totalPriceSpan.textContent = discountedTotal.toFixed(2);
+        } else {
+          promoMessage.textContent = data.message || 'Invalid promo code';
+          promoMessage.className = 'text-xs mt-1 text-red-600';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        promoMessage.textContent = 'Error validating promo code';
+        promoMessage.className = 'text-xs mt-1 text-red-600';
+      });
+  });
+
+  // Calculate initial price
+  calculatePrice();
+});
+</script>
+
+<%- include('../partials/footer') %>

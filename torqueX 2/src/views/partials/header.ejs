@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+  <title><%= typeof title !== 'undefined' ? title : 'Error' %> | TorqueX</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link rel="stylesheet" href="/stylesheets/homepage.css">
+  <link rel="stylesheet" href="/stylesheets/dashboard.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    // Theme toggle functionality
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  <!-- Clerk Authentication (Optional) -->
+  <% 
+    const hasValidClerkKey = typeof clerkPublishableKey !== 'undefined' && 
+                             clerkPublishableKey && 
+                             clerkPublishableKey.length > 10 && 
+                             clerkPublishableKey !== 'undefined' && 
+                             clerkPublishableKey.startsWith('pk_');
+    const isTestingEnvironment = process.env.NODE_ENV === 'test' || 
+                                 process.env.SKIP_CLERK === 'true' ||
+                                 (typeof global !== 'undefined' && global.jasmine);
+  %>
+  <% if (hasValidClerkKey && !isTestingEnvironment) { %>
+  <script>
+    // Only load Clerk if we have a valid key
+    (function() {
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js';
+      script.async = true;
+      script.onload = function() {
+        if (window.Clerk) {
+          try {
+            window.Clerk.load({ 
+              publishableKey: '<%= clerkPublishableKey %>'
+            }).then(function() {
+              console.log('Clerk initialized successfully');
+              document.dispatchEvent(new Event('clerkLoaded'));
+            }).catch(function(error) {
+              console.warn('Clerk initialization failed, using fallback auth:', error.message);
+              document.dispatchEvent(new Event('clerkFailed'));
+            });
+          } catch(e) {
+            console.warn('Clerk error:', e.message);
+            document.dispatchEvent(new Event('clerkFailed'));
+          }
+        }
+      };
+      script.onerror = function() {
+        console.log('Clerk script failed to load, using fallback auth');
+        document.dispatchEvent(new Event('clerkFailed'));
+      };
+      document.head.appendChild(script);
+    })();
+  </script>
+  <% } else { %>
+  <script>
+    // No Clerk key configured - use fallback authentication only
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Using fallback authentication (Clerk not configured)');
+      document.dispatchEvent(new Event('clerkFailed'));
+    });
+  </script>
+  <% } %>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <%- include('./navbar') %>
+  
+  <main class="flex-grow container mx-auto px-4 py-8">

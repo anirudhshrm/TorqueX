@@ -1,0 +1,130 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "darwin-arm64"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(uuid())
+  clerkId         String           @unique
+  name            String
+  email           String           @unique
+  role            Role             @default(USER)
+  phone           String?
+  address         String?
+  passwordHash    String?
+  passwordSalt    String?
+  createdAt       DateTime         @default(now())
+  bookings        Booking[]
+  reviews         Review[]
+  vehicleRequests VehicleRequest[]
+}
+
+model Vehicle {
+  id           String    @id @default(uuid())
+  name         String
+  type         String
+  specs        Json
+  pricePerDay  Float
+  availability Boolean   @default(true)
+  images       String[]
+  description  String?
+  features     String[]  @default([])
+  createdAt    DateTime  @default(now())
+  bookings     Booking[]
+  reviews      Review[]
+}
+
+model Booking {
+  id              String   @id @default(uuid())
+  userId          String
+  vehicleId       String
+  startDate       DateTime
+  endDate         DateTime
+  status          Status   @default(PENDING)
+  totalPrice      Float
+  paymentIntentId String?
+  paymentMethod   String?
+  promoCode       String?
+  user            User     @relation(fields: [userId], references: [id])
+  vehicle         Vehicle  @relation(fields: [vehicleId], references: [id])
+  reviews         Review[]
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  bookingId String
+  userId    String
+  vehicleId String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
+}
+
+model Deal {
+  id            String   @id @default(uuid())
+  title         String
+  code          String   @unique
+  codeHash      String   @unique
+  description   String
+  discountType  String   @default("percentage")
+  discountValue Float
+  minPurchase   Float?
+  validFrom     DateTime
+  validUntil    DateTime
+  usageLimit    Int?
+  currentUsage  Int      @default(0)
+  vehicleType   String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Broadcast {
+  id         String   @id @default(uuid())
+  adminId    String
+  title      String
+  message    String
+  userTarget String   @default("ALL")
+  createdAt  DateTime @default(now())
+}
+
+model VehicleRequest {
+  id           String               @id @default(uuid())
+  userId       String
+  make         String
+  model        String
+  year         Int
+  type         String
+  description  String?
+  status       VehicleRequestStatus @default(PENDING)
+  adminComment String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  user         User                 @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Status {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum VehicleRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

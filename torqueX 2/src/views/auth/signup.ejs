@@ -1,0 +1,130 @@
+<%- include('../partials/header') %>
+<link rel="stylesheet" href="/stylesheets/signup.css">
+
+<div class="signup-wrapper">
+  <div class="signup-container">
+    <!-- Signup Card -->
+    <div class="signup-card">
+      <!-- Logo/Brand Section -->
+      <div class="signup-header">
+        <h1 class="signup-title">Create Account</h1>
+        <p class="signup-subtitle">Join TorqueX and start your journey</p>
+      </div>
+      
+      <!-- Signup Form -->
+      <form action="/auth/callback" method="POST" class="signup-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        
+        <!-- Name Input -->
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" id="name" name="name" placeholder="Enter your name" class="form-input" required>
+        </div>
+        
+        <!-- Email Input -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" class="form-input" required>
+        </div>
+        
+        <!-- Password Input -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="password" name="password" placeholder="Enter your password" class="form-input password-input" required>
+            <button type="button" onclick="togglePassword()" class="password-toggle" aria-label="Toggle password visibility">
+              <svg id="eye-icon" class="eye-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Terms Checkbox -->
+        <div class="form-options">
+          <label class="terms-checkbox">
+            <input type="checkbox" id="terms" class="checkbox-input" required>
+            <span class="checkbox-label">
+              I agree to the <a href="#" class="terms-link">Terms</a> and <a href="#" class="terms-link">Privacy Policy</a>
+            </span>
+          </label>
+        </div>
+        
+        <!-- Submit Button -->
+        <button type="submit" class="signup-submit-btn">
+          Create Account
+        </button>
+      </form>
+        
+      <div id="clerk-auth-container" class="clerk-container" style="display: none;">
+        <div class="clerk-loading">
+          <p>Loading authentication service...</p>
+        </div>
+      </div>
+
+      <!-- Login Link -->
+      <div class="signup-footer">
+        <p class="login-text">
+          Already have an account?
+          <a href="/auth/login" class="login-link">Sign in instead</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eye-icon');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />';
+    } else {
+      passwordInput.type = 'password';
+      eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const formElement = document.querySelector('form');
+    const clerkContainer = document.getElementById('clerk-auth-container');
+    
+    // Always show fallback form first
+    clerkContainer.style.display = 'none';
+    formElement.style.display = 'block';
+    
+    // Listen for Clerk loaded event
+    document.addEventListener('clerkLoaded', function() {
+      console.log('Clerk loaded successfully - hiding fallback form');
+      try {
+        if (window.Clerk && window.Clerk.mountSignUp) {
+          formElement.style.display = 'none';
+          clerkContainer.style.display = 'block';
+          clerkContainer.innerHTML = '';
+          
+          window.Clerk.mountSignUp(clerkContainer, {
+            signUpUrl: '/auth/signup',
+            afterSignUpUrl: '/auth/callback',
+            redirectUrl: '/auth/callback'
+          });
+        }
+      } catch (error) {
+        console.error('Error mounting Clerk:', error);
+        formElement.style.display = 'block';
+        clerkContainer.style.display = 'none';
+      }
+    });
+    
+    // Listen for Clerk failed event - ensure fallback form is visible
+    document.addEventListener('clerkFailed', function() {
+      console.log('Clerk not available - using fallback form');
+      formElement.style.display = 'block';
+      clerkContainer.style.display = 'none';
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

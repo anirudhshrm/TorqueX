@@ -1,0 +1,53 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Vehicle Reviews</h1>
+            <p class="text-gray-600 dark:text-gray-400">Read reviews from our community of renters</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div class="grid grid-cols-1 gap-6">
+                <% if (reviews && reviews.length > 0) { %>
+                    <% reviews.forEach(review => { %>
+                        <div class="border-b pb-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <h3 class="font-bold text-lg dark:text-white"><%= review.title || 'Untitled Review' %></h3>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">
+                                        By <%= review.author || 'Anonymous' %> • 
+                                        <%= new Date(review.createdAt).toLocaleDateString() %>
+                                    </p>
+                                </div>
+                                <div class="text-yellow-500 text-lg">
+                                    <% for (let i = 0; i < (review.rating || 5); i++) { %>★<% } %>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 dark:text-gray-300"><%= review.comment || 'No comment' %></p>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="text-center py-12">
+                        <p class="text-gray-600 text-lg"><%= message || 'No reviews yet. Be the first to review!' %></p>
+                        <% if (user) { %>
+                            <a href="/bookings" class="inline-block mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                                View Your Bookings
+                            </a>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <% if (user) { %>
+            <div class="mt-8 text-center">
+                <a href="/reviews/form" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 inline-block">
+                    Leave a Review
+                </a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/actual-footer') %>

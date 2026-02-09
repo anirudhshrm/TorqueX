@@ -1,0 +1,158 @@
+{
+  "info": {
+    "name": "TorqueX Admin Login",
+    "description": "Test admin authentication and dashboard access",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Get Login Page (Get CSRF Token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Extract CSRF token from HTML response",
+              "const html = pm.response.text();",
+              "const csrfMatch = html.match(/_csrf\" value=\"([^\"]+)\"/);",
+              "if (csrfMatch) {",
+              "    pm.environment.set('csrf_token', csrfMatch[1]);",
+              "    console.log('CSRF Token:', csrfMatch[1]);",
+              "} else {",
+              "    console.error('CSRF token not found in response');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "2. Login with Admin Credentials",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Login successful', function () {",
+              "    pm.expect([302, 200]).to.include(pm.response.code);",
+              "});",
+              "",
+              "if (pm.response.code === 302) {",
+              "    const location = pm.response.headers.get('Location');",
+              "    console.log('Redirected to:', location);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "admin@torquex.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "admin123",
+              "type": "text"
+            },
+            {
+              "key": "_csrf",
+              "value": "{{csrf_token}}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:3000/auth/callback",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["auth", "callback"]
+        }
+      }
+    },
+    {
+      "name": "3. Access Admin Dashboard",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Dashboard loads successfully', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response contains dashboard content', function () {",
+              "    pm.expect(pm.response.text()).to.include('dashboard');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/admin/dashboard",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["admin", "dashboard"]
+        }
+      }
+    },
+    {
+      "name": "4. Get Admin Stats API",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/admin/stats",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["admin", "stats"]
+        }
+      }
+    },
+    {
+      "name": "5. Get Redis Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/admin/redis-status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["admin", "redis-status"]
+        }
+      }
+    }
+  ]
+}

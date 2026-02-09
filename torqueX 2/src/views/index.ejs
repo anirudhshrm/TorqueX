@@ -1,0 +1,470 @@
+<%- include('./partials/header') %>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="text-center">
+      <div class="hero-badge">
+        ✨ Premium Car Rentals
+      </div>
+      <h1>
+        DISCOVER YOUR
+        <span class="block">DREAM RIDE</span>
+      </h1>
+      <p class="hero-subtitle">
+        Experience luxury and performance with our premium fleet of vehicles
+      </p>
+      <div class="hero-buttons">
+        <a href="/vehicles" class="hero-btn-primary">
+          <span>Browse Collection</span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+        <a href="/contact" class="hero-btn-secondary">
+          <span>Get Started</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Vehicles Section -->
+<section id="featured" class="homepage-section dark-bg">
+  <div class="container">
+    <div class="text-center mb-16">
+      <div class="section-badge">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+        <span>Discover Premium</span>
+      </div>
+      <h2 class="section-title">FEATURED VEHICLES</h2>
+      <p class="section-subtitle">Explore our curated selection of high-performance vehicles</p>
+    </div>
+    
+    <% if (featuredVehicles && featuredVehicles.length > 0) { %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <% featuredVehicles.slice(0, 6).forEach(vehicle => { %>
+          <div class="vehicle-card">
+            <!-- Image Container -->
+            <div class="vehicle-card-image">
+              <img 
+                src="<%= vehicle.images[0] || '/images/vehicle-placeholder.jpg' %>" 
+                alt="<%= vehicle.name %>"
+              >
+              <div class="vehicle-card-overlay">
+                <a href="/vehicles/<%= vehicle.id %>" class="vehicle-card-view-btn">View Details →</a>
+              </div>
+              <div class="vehicle-card-type-badge">
+                <%= vehicle.type %>
+              </div>
+            </div>
+            
+            <!-- Card Content -->
+            <div class="vehicle-card-content">
+              <h3 class="vehicle-card-name"><%= vehicle.name %></h3>
+              
+              <div class="vehicle-card-price-row">
+                <div>
+                  <span class="vehicle-card-price">$<%= vehicle.pricePerDay %></span>
+                  <span class="vehicle-card-price-label">/day</span>
+                </div>
+                
+                <% if (vehicle.availability) { %>
+                  <span class="vehicle-card-badge available">
+                    Available
+                  </span>
+                <% } else { %>
+                  <span class="vehicle-card-badge booked">Booked</span>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="text-center" style="margin-top: 4rem;">
+        <a href="/vehicles" class="hero-btn-primary">
+          <span>View All Vehicles</span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+      </div>
+    <% } else { %>
+      <div class="text-center section-subtitle" style="padding: 3rem 0;">
+        <p>No featured vehicles available at the moment.</p>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<!-- Pick Your Car Process Section -->
+<section class="homepage-section">
+  <div class="container">
+    <div class="text-center mb-16">
+      <div class="section-badge">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <span>How It Works</span>
+      </div>
+      <h2 class="section-title">PICK YOUR CAR</h2>
+      <p class="section-subtitle">Simple, Fast, and Secure Process</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3">
+      <!-- Easy Process -->
+      <div class="process-step">
+        <div class="process-step-icon-wrapper">
+          <div class="process-step-icon-bg blue">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <div class="process-step-number blue">1</div>
+        </div>
+        <h3 class="process-step-title">Easy Process</h3>
+        <p class="process-step-desc">Browse, select, and book your perfect vehicle in minutes with our streamlined process.</p>
+        <a href="/vehicles" class="process-step-link blue">
+          <span>Learn More</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Fast Approval -->
+      <div class="process-step">
+        <div class="process-step-icon-wrapper">
+          <div class="process-step-icon-bg green">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="process-step-number green">2</div>
+        </div>
+        <h3 class="process-step-title">Fast Approval</h3>
+        <p class="process-step-desc">Get instant booking confirmation and approval with our automated system. Start driving within hours.</p>
+        <a href="/vehicles" class="process-step-link green">
+          <span>Learn More</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Secure Delivery -->
+      <div class="process-step">
+        <div class="process-step-icon-wrapper">
+          <div class="process-step-icon-bg orange">
+            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <div class="process-step-number orange">3</div>
+        </div>
+        <h3 class="process-step-title">Secure Delivery</h3>
+        <p class="process-step-desc">Enjoy peace of mind with full insurance coverage and secure vehicle handover at your preferred location.</p>
+        <a href="/vehicles" class="process-step-link orange">
+          <span>Learn More</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Free Test Drive CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="grid grid-cols-1 md:grid-cols-2">
+      <!-- Content Side -->
+      <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="cta-offer-badge">
+            <div class="cta-offer-icon">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span class="cta-offer-text">Limited Time Offer</span>
+          </div>
+          
+          <h2 class="cta-title">
+            FREE TEST
+            <span class="cta-title-gradient">DRIVE</span>
+          </h2>
+        </div>
+        
+        <p class="cta-description">
+          Experience the thrill before you commit. Book your complimentary test drive today and feel the power, luxury, and precision of your dream car.
+        </p>
+        
+        <div class="cta-features">
+          <div class="cta-feature-item">
+            <div class="cta-feature-icon">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="cta-feature-text">No obligations</span>
+          </div>
+          <div class="cta-feature-item">
+            <div class="cta-feature-icon">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="cta-feature-text">Flexible scheduling</span>
+          </div>
+          <div class="cta-feature-item">
+            <div class="cta-feature-icon">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="cta-feature-text">Expert guidance</span>
+          </div>
+          <div class="cta-feature-item">
+            <div class="cta-feature-icon">
+              <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span class="cta-feature-text">Insurance covered</span>
+          </div>
+        </div>
+        
+        <div>
+          <a href="/contact" class="cta-button">
+            <span>Book Your Test Drive</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+          <p class="cta-note">📅 Available slots filling fast - Book within 24 hours</p>
+        </div>
+      </div>
+      
+      <!-- Image Side -->
+      <div class="md:w-1/2">
+        <div class="relative group">
+          <!-- Glow Effect -->
+          <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+          
+          <!-- Image Container -->
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+            <img 
+              src="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800" 
+              alt="Luxury Car Test Drive"
+              class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
+              style="min-height: 500px; max-height: 600px;"
+              onerror="this.src='/images/vehicle-placeholder.jpg'"
+            >
+            <!-- Overlay Badge -->
+            <div class="absolute top-6 right-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-full font-bold text-sm shadow-lg backdrop-blur-sm">
+              ⚡ Limited Slots
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+  <div class="container">
+    <div class="text-center mb-16">
+      <div class="faq-badge">
+        ❓ Support Center
+      </div>
+      <h2 class="faq-title">FREQUENTLY ASKED QUESTIONS</h2>
+      <p class="faq-subtitle">Get instant answers to your most common questions</p>
+    </div>
+    
+    <div class="faq-container" x-data="{ openFaq: null }">
+      <!-- FAQ 1 -->
+      <div class="faq-item">
+        <button @click="openFaq = openFaq === 1 ? null : 1" class="faq-question">
+          <div class="faq-question-content">
+            <div class="faq-icon-wrapper blue">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="faq-question-title">How do I book a vehicle?</h3>
+          </div>
+          <svg class="faq-chevron blue" :class="{ 'rotate-180': openFaq === 1 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="openFaq === 1" x-collapse>
+          <div class="faq-answer">
+            Browse our vehicle collection, select your desired car, choose your rental dates, and complete the booking process. You can sign up or log in to manage your bookings and save your preferences for future rentals.
+          </div>
+        </div>
+      </div>
+      
+      <!-- FAQ 2 -->
+      <div class="faq-item">
+        <button @click="openFaq = openFaq === 2 ? null : 2" class="faq-question">
+          <div class="faq-question-content">
+            <div class="faq-icon-wrapper purple">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 class="faq-question-title">What documents do I need to rent a car?</h3>
+          </div>
+          <svg class="faq-chevron purple" :class="{ 'rotate-180': openFaq === 2 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="openFaq === 2" x-collapse>
+          <div class="faq-answer">
+            You'll need a valid driver's license, proof of identity (passport or national ID), and a valid credit card in your name. Additional requirements may apply for luxury or specialty vehicles.
+          </div>
+        </div>
+      </div>
+      
+      <!-- FAQ 3 -->
+      <div class="faq-item">
+        <button @click="openFaq = openFaq === 3 ? null : 3" class="faq-question">
+          <div class="faq-question-content">
+            <div class="faq-icon-wrapper green">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </div>
+            <h3 class="faq-question-title">Can I modify or cancel my booking?</h3>
+          </div>
+          <svg class="faq-chevron green" :class="{ 'rotate-180': openFaq === 3 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="openFaq === 3" x-collapse>
+          <div class="faq-answer">
+            Yes, you can modify or cancel your booking from your dashboard. Cancellations made 24 hours or more before pickup are fully refundable. Later cancellations may incur fees according to our cancellation policy.
+          </div>
+        </div>
+      </div>
+      
+      <!-- FAQ 4 -->
+      <div class="faq-item">
+        <button @click="openFaq = openFaq === 4 ? null : 4" class="faq-question">
+          <div class="faq-question-content">
+            <div class="faq-icon-wrapper yellow">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <h3 class="faq-question-title">Is insurance included in the rental price?</h3>
+          </div>
+          <svg class="faq-chevron yellow" :class="{ 'rotate-180': openFaq === 4 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="openFaq === 4" x-collapse>
+          <div class="faq-answer">
+            Basic insurance coverage is included in all our rental rates. You can upgrade to comprehensive coverage for additional protection. We recommend reviewing the insurance options during the booking process.
+          </div>
+        </div>
+      </div>
+      
+      <!-- FAQ 5 -->
+      <div class="faq-item">
+        <button @click="openFaq = openFaq === 5 ? null : 5" class="faq-question">
+          <div class="faq-question-content">
+            <div class="faq-icon-wrapper red">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 class="faq-question-title">What is your fuel policy?</h3>
+          </div>
+          <svg class="faq-chevron red" :class="{ 'rotate-180': openFaq === 5 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="openFaq === 5" x-collapse>
+          <div class="faq-answer">
+            We operate on a full-to-full policy. You'll receive the vehicle with a full tank and should return it full. If returned with less fuel, a refueling charge will apply based on current fuel prices plus a service fee.
+          </div>
+        </div>
+      </div>
+      
+      <!-- FAQ 6 -->
+      <div class="faq-item">
+        <button @click="openFaq = openFaq === 6 ? null : 6" class="faq-question">
+          <div class="faq-question-content">
+            <div class="faq-icon-wrapper indigo">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="faq-question-title">Can I extend my rental period?</h3>
+          </div>
+          <svg class="faq-chevron indigo" :class="{ 'rotate-180': openFaq === 6 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <div x-show="openFaq === 6" x-collapse>
+          <div class="faq-answer">
+            Yes, you can extend your rental by contacting us at least 24 hours before your scheduled return. Extensions are subject to vehicle availability and will be charged at the current daily rate.
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center" style="margin-top: 4rem;">
+      <div class="faq-cta-box">
+        <h3 class="faq-cta-title">Still have questions?</h3>
+        <p class="faq-cta-subtitle">Our support team is here to help you 24/7</p>
+        <a href="/contact" class="faq-cta-button">
+          Contact Support →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Deal of the Day -->
+<% if (locals.activeDeal) { %>
+  <section class="bg-white dark:bg-gray-800 py-16 transition-colors duration-300">
+    <div class="container mx-auto px-4">
+      <div class="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-2xl shadow-xl p-8 md:p-12 border-l-4 border-yellow-400">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="md:w-2/3">
+            <div class="inline-block bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-4 py-2 rounded-full text-sm font-bold mb-4">
+              🔥 Limited Time Offer
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-3"><%= activeDeal.title %></h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-6 text-lg"><%= activeDeal.description %></p>
+            <div class="flex items-center gap-6">
+              <div class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-6 py-3 rounded-xl">
+                <span class="text-3xl font-bold"><%= activeDeal.discountPercent %>%</span>
+                <span class="text-sm ml-2">OFF</span>
+              </div>
+              <div class="text-gray-600 dark:text-gray-300">
+                <div class="text-sm font-medium">Valid until</div>
+                <div class="font-bold text-lg"><%= new Date(activeDeal.validUntil).toLocaleDateString() %></div>
+              </div>
+            </div>
+          </div>
+          <div class="md:w-1/3 text-center">
+            <a href="/vehicles" class="inline-block bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl">
+              Claim Offer Now
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<% } %>
+
+<%- include('./partials/footer') %>

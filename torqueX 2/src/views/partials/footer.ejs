@@ -1,0 +1,130 @@
+  </main>
+
+  <%- include('./actual-footer') %>
+
+  
+<script>
+  <% if (typeof user !== 'undefined' && user) { %>
+    // Initialize Socket.io if not already done
+    if (!window.socket) {
+      window.socket = io();
+    }
+    const socket = window.socket;
+
+    // Authenticate user with socket
+    socket.emit('authenticate', {
+      userId: '<%= user.id %>',
+      role: '<%= user.role %>'
+    });
+
+    // Queue for incoming broadcasts
+    const broadcastQueue = [];
+    let isShowing = false;
+
+    function showNextBroadcast() {
+      if (broadcastQueue.length === 0) {
+        isShowing = false;
+        return;
+      }
+      isShowing = true;
+      const data = broadcastQueue.shift();
+      const notification = document.getElementById('broadcast-notification');
+      if (!notification) return;
+      
+      const messageEl = notification.querySelector('.message');
+      if (!messageEl) return;
+      
+      messageEl.textContent = data.message;
+      notification.classList.remove('hidden');
+
+      setTimeout(() => {
+        notification.classList.add('hidden');
+        // Show the next message in queue
+        setTimeout(showNextBroadcast, 300); // small delay for smooth transition
+      }, 10000);
+    }
+
+    socket.on('broadcast', function(data) {
+      broadcastQueue.push(data);
+      if (!isShowing) showNextBroadcast();
+    });
+
+    // Close button handler
+    const broadcastNotification = document.getElementById('broadcast-notification');
+    if (broadcastNotification) {
+      const closeButton = broadcastNotification.querySelector('button');
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          broadcastNotification.classList.add('hidden');
+        });
+      }
+    }
+  <% } %>
+
+  // Theme toggle functionality
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+  const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+  if (themeToggleBtn) {
+    // Show the correct icon on page load
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      themeToggleLightIcon?.classList.remove('hidden');
+      themeToggleDarkIcon?.classList.add('hidden');
+    } else {
+      themeToggleDarkIcon?.classList.remove('hidden');
+      themeToggleLightIcon?.classList.add('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      // Toggle icons
+      themeToggleDarkIcon?.classList.toggle('hidden');
+      themeToggleLightIcon?.classList.toggle('hidden');
+
+      // Toggle theme
+      if (localStorage.getItem('color-theme')) {
+        if (localStorage.getItem('color-theme') === 'light') {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+        }
+      } else {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+        }
+      }
+    });
+  }
+</script>
+
+
+  <!-- Broadcast notification -->
+  <div id="broadcast-notification" class="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-lg shadow-lg hidden transition-all duration-300 max-w-md z-50">
+    <div class="flex items-start">
+      <div class="flex-shrink-0">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+        </svg>
+      </div>
+      <div class="ml-3 w-0 flex-1">
+        <p class="text-sm font-medium">Admin Broadcast</p>
+        <p class="mt-1 text-sm message"></p>
+      </div>
+      <div class="ml-4 flex-shrink-0 flex">
+        <button onclick="document.getElementById('broadcast-notification').classList.add('hidden')" class="bg-blue-600 rounded-md inline-flex text-white hover:text-gray-200 focus:outline-none">
+          <span class="sr-only">Close</span>
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - TorqueX Admin</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <style>
+    body {
+      background: #111827;
+      color: #f3f4f6;
+    }
+    
+    .cache-viewer {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .cache-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #374151;
+    }
+    
+    .cache-stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .stat-card {
+      background: #1f2937;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: #9ca3af;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f3f4f6;
+    }
+    
+    .cache-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .cache-controls input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #4b5563;
+      background: #374151;
+      color: #f3f4f6;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    
+    .cache-controls button {
+      padding: 10px 20px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    
+    .cache-controls button:hover {
+      background: #b91c1c;
+    }
+    
+    .cache-controls .btn-secondary {
+      background: #6b7280;
+    }
+    
+    .cache-controls .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    .cache-table {
+      background: #1f2937;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    
+    .cache-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .cache-table th {
+      background: #374151;
+      padding: 12px 15px;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #4b5563;
+    }
+    
+    .cache-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #374151;
+      font-size: 0.875rem;
+      color: #f3f4f6;
+    }
+    
+    .cache-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .cache-table tbody tr:hover {
+      background: #374151;
+    }
+    
+    .cache-key {
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      color: #059669;
+      word-break: break-all;
+    }
+    
+    .cache-type {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #dbeafe;
+      color: #1e40af;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .cache-ttl {
+      color: #6b7280;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+    }
+    
+    .cache-value {
+      max-width: 500px;
+      max-height: 200px;
+      overflow: auto;
+      background: #374151;
+      padding: 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: #f3f4f6;
+    }
+    
+    .cache-actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .btn-clear-key {
+      padding: 4px 12px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: background 0.2s;
+    }
+    
+    .btn-clear-key:hover {
+      background: #b91c1c;
+    }
+    
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9ca3af;
+    }
+    
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      opacity: 0.5;
+    }
+    
+    .back-link {
+      display: inline-block;
+      color: #2563eb;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 0.875rem;
+    }
+    
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <div class="cache-viewer">
+    <a href="/admin/dashboard" class="back-link">← Back to Dashboard</a>
+    
+    <div class="cache-header">
+      <div>
+        <h1 style="margin: 0 0 5px 0; color: #f3f4f6;">Redis Cache Viewer</h1>
+        <p style="margin: 0; color: #9ca3af;">View and manage all cached data</p>
+      </div>
+    </div>
+    
+    <% if (error) { %>
+      <div class="error-message">
+        <strong>Error:</strong> <%= error %>
+      </div>
+    <% } %>
+    
+    <% if (!error) { %>
+      <!-- Cache Population Guide -->
+      <% if (!keys || keys.length === 0) { %>
+        <div style="background: #1e3a8a; border: 1px solid #3b82f6; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+          <h3 style="margin: 0 0 15px 0; color: #93c5fd; font-size: 1rem;">📦 Cache is Empty - Follow These Steps:</h3>
+          
+          <div style="background: #1f2937; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-weight: 600;">Step 1: Add a Vehicle</p>
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-size: 0.875rem;">Go to <a href="/admin/vehicles/new" style="color: #60a5fa; text-decoration: underline;">Add Vehicle</a> and create a new vehicle</p>
+          </div>
+          
+          <div style="background: #1f2937; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-weight: 600;">Step 2: View Vehicles</p>
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-size: 0.875rem;">Visit <a href="/" style="color: #60a5fa; text-decoration: underline;">Homepage</a> - This caches <code style="background: #374151; padding: 2px 6px; border-radius: 3px; color: #f3f4f6;">vehicles:list:*</code></p>
+          </div>
+          
+          <div style="background: #1f2937; border-radius: 6px; padding: 15px; margin-bottom: 15px;">
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-weight: 600;">Step 3: View Broadcasts</p>
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-size: 0.875rem;">Visit <a href="/admin/broadcasts" style="color: #60a5fa; text-decoration: underline;">Broadcasts</a> - This caches <code style="background: #374151; padding: 2px 6px; border-radius: 3px; color: #f3f4f6;">broadcasts:all</code></p>
+          </div>
+          
+          <div style="background: #1f2937; border-radius: 6px; padding: 15px;">
+            <p style="margin: 0 0 10px 0; color: #93c5fd; font-weight: 600;">Step 4: Refresh This Page</p>
+            <p style="margin: 0; color: #93c5fd; font-size: 0.875rem;">Click the "Refresh" button below to see cached data appear</p>
+          </div>
+          
+          <p style="margin: 15px 0 0 0; color: #93c5fd; font-size: 0.875rem; text-align: center;"><strong>💡 Tip:</strong> Cache expires after 2-5 minutes, then data is fetched fresh from database</p>
+        </div>
+      <% } %>
+      
+      <div class="cache-stats">
+        <div class="stat-card">
+          <div class="stat-label">Total Keys</div>
+          <div class="stat-value"><%= totalKeys || 0 %></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Cache Status</div>
+          <div class="stat-value" style="color: #059669;">Active</div>
+        </div>
+      </div>
+      
+      <div class="cache-controls">
+        <input 
+          type="text" 
+          id="pattern-input" 
+          placeholder="Enter pattern to clear (e.g., vehicles:* or * for all)"
+          value="*"
+        >
+        <button class="btn-secondary" onclick="refreshCache()">Refresh</button>
+        <button onclick="clearCache()">Clear Cache</button>
+      </div>
+      
+      <% if (keys && keys.length > 0) { %>
+        <div class="cache-table">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 25%;">Key</th>
+                <th style="width: 8%;">Type</th>
+                <th style="width: 10%;">TTL</th>
+                <th style="width: 45%;">Value</th>
+                <th style="width: 12%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% keys.forEach(key => { %>
+                <tr>
+                  <td><div class="cache-key"><%= key %></div></td>
+                  <td><span class="cache-type"><%= cacheData[key].type || 'unknown' %></span></td>
+                  <td><div class="cache-ttl"><%= cacheData[key].ttl || 'N/A' %></div></td>
+                  <td>
+                    <% if (cacheData[key].error) { %>
+                      <div style="color: #dc2626; font-size: 0.75rem;">Error: <%= cacheData[key].error %></div>
+                    <% } else { %>
+                      <div class="cache-value"><%= JSON.stringify(cacheData[key].value, null, 2) %></div>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="cache-actions">
+                      <button class="btn-clear-key" onclick="clearSpecificKey('<%= key %>')">Clear</button>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+          </svg>
+          <h3>No cached data found</h3>
+          <p>Redis is empty or no keys match the current filter.</p>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+  
+  <script>
+    async function clearCache() {
+      const pattern = document.getElementById('pattern-input').value.trim() || '*';
+      
+      if (!confirm(`Are you sure you want to clear cache for pattern: ${pattern}?`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch('/admin/cache-clear', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ pattern })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          alert(data.message);
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        alert('Error clearing cache: ' + error.message);
+      }
+    }
+    
+    async function clearSpecificKey(key) {
+      if (!confirm(`Clear cache for key: ${key}?`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch('/admin/cache-clear', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ pattern: key })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          alert(data.message);
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        alert('Error clearing cache: ' + error.message);
+      }
+    }
+    
+    function refreshCache() {
+      window.location.reload();
+    }
+  </script>
+  
+  <%- include('../partials/footer') %>
+</body>
+</html>

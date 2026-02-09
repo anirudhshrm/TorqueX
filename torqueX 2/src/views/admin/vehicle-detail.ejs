@@ -1,0 +1,218 @@
+<%- include('../partials/header') %>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <div class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+    <div class="p-4 bg-gradient-to-r from-purple-600 to-purple-800">
+      <h2 class="text-xl font-bold text-white">TorqueX Admin</h2>
+    </div>
+    <nav class="p-2">
+      <ul class="space-y-1">
+        <li>
+          <a href="/admin/dashboard" class="flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/admin/vehicles" class="flex items-center px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-700 text-white shadow-md rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Vehicles
+          </a>
+        </li>
+        <li>
+          <a href="/admin/bookings" class="flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Bookings
+          </a>
+        </li>
+        <li>
+          <a href="/admin/broadcasts" class="flex items-center px-4 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+            Broadcasts
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 bg-white dark:bg-gray-900">
+    <div class="p-8">
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Vehicle Details</h1>
+          <p class="text-gray-700 dark:text-gray-400">Manage vehicle information and view analytics</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <a href="/admin/vehicles" class="bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-white px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-700">
+            Back to Vehicles
+          </a>
+          <button onclick="editVehicle()" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+            Edit Vehicle
+          </button>
+        </div>
+      </div>
+
+      <!-- Vehicle Info -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Vehicle Image -->
+        <div class="lg:col-span-1">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <img 
+              src="<%= vehicle.images && vehicle.images.length > 0 ? vehicle.images[0] : '/images/placeholder-car.jpg' %>" 
+              alt="<%= vehicle.name %>" 
+              class="w-full h-48 object-cover rounded-lg mb-4"
+            >
+            <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white"><%= vehicle.name %></h3>
+            <p class="text-gray-700 dark:text-gray-300 mb-4"><%= vehicle.description || 'No description available' %></p>
+            <div class="space-y-2">
+              <div class="flex justify-between text-gray-900 dark:text-gray-100">
+                <span class="text-gray-700 dark:text-gray-400">Type:</span>
+                <span class="font-medium"><%= vehicle.type %></span>
+              </div>
+              <div class="flex justify-between text-gray-900 dark:text-gray-100">
+                <span class="text-gray-700 dark:text-gray-400">Price per Day:</span>
+                <span class="font-medium text-green-600">$<%= vehicle.pricePerDay.toLocaleString() %></span>
+              </div>
+              <div class="flex justify-between text-gray-900 dark:text-gray-100">
+                <span class="text-gray-700 dark:text-gray-400">Status:</span>
+                <span class="<%= vehicle.availability ? 'text-green-600' : 'text-red-600' %>">
+                  <%= vehicle.availability ? 'Available' : 'Unavailable' %>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Specs -->
+        <div class="lg:col-span-2">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Vehicle Specifications</h3>
+            <% if (vehicle.specs) { %>
+            <div class="grid grid-cols-2 gap-4 text-gray-900 dark:text-gray-100">
+              <% if (vehicle.specs.seats) { %>
+              <div>
+                <span class="text-gray-700 dark:text-gray-400">Seats:</span>
+                <span class="font-medium ml-2"><%= vehicle.specs.seats %></span>
+              </div>
+              <% } %>
+              <% if (vehicle.specs.transmission) { %>
+              <div>
+                <span class="text-gray-700 dark:text-gray-400">Transmission:</span>
+                <span class="font-medium ml-2"><%= vehicle.specs.transmission %></span>
+              </div>
+              <% } %>
+              <% if (vehicle.specs.fuelType) { %>
+              <div>
+                <span class="text-gray-700 dark:text-gray-400">Fuel Type:</span>
+                <span class="font-medium ml-2"><%= vehicle.specs.fuelType %></span>
+              </div>
+              <% } %>
+              <% if (vehicle.specs.year) { %>
+              <div>
+                <span class="text-gray-700 dark:text-gray-400">Year:</span>
+                <span class="font-medium ml-2"><%= vehicle.specs.year %></span>
+              </div>
+              <% } %>
+            </div>
+            <% } else { %>
+            <p class="text-gray-500">No specifications available</p>
+            <% } %>
+
+            <% if (vehicle.features && vehicle.features.length > 0) { %>
+            <div class="mt-6">
+              <h4 class="font-medium mb-3 text-gray-900 dark:text-white">Features</h4>
+              <div class="flex flex-wrap gap-2">
+                <% vehicle.features.forEach(feature => { %>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"><%= feature %></span>
+                <% }) %>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookings and Reviews -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Bookings -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+          <div class="p-6 border-b dark:border-gray-700">
+            <h3 class="text-lg font-semibold dark:text-white">Recent Bookings</h3>
+          </div>
+          <div class="p-6">
+            <% if (vehicle.bookings && vehicle.bookings.length > 0) { %>
+            <div class="space-y-4">
+              <% vehicle.bookings.slice(0, 5).forEach(booking => { %>
+              <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                <div>
+                  <p class="font-medium text-gray-900 dark:text-white"><%= booking.user?.name || 'Unknown User' %></p>
+                  <p class="text-sm text-gray-700 dark:text-gray-400"><%= new Date(booking.createdAt).toLocaleDateString() %></p>
+                </div>
+                <span class="px-2 py-1 text-xs rounded-full 
+                  <%= booking.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
+                      booking.status === 'COMPLETED' ? 'bg-blue-100 text-blue-800' : 
+                      'bg-red-100 text-red-800' %>">
+                  <%= booking.status %>
+                </span>
+              </div>
+              <% }) %>
+            </div>
+            <% } else { %>
+            <p class="text-gray-700 dark:text-gray-400">No bookings yet</p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Recent Reviews -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+          <div class="p-6 border-b dark:border-gray-700">
+            <h3 class="text-lg font-semibold dark:text-white">Recent Reviews</h3>
+          </div>
+          <div class="p-6">
+            <% if (vehicle.reviews && vehicle.reviews.length > 0) { %>
+            <div class="space-y-4">
+              <% vehicle.reviews.slice(0, 5).forEach(review => { %>
+              <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                <div class="flex justify-between items-start mb-2">
+                  <p class="font-medium dark:text-white"><%= review.user?.name || 'Anonymous' %></p>
+                  <div class="flex">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                      <svg class="w-4 h-4 <%= i <= review.rating ? 'text-yellow-400' : 'text-gray-300' %>" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    <% } %>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><%= review.comment %></p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1"><%= new Date(review.createdAt).toLocaleDateString() %></p>
+              </div>
+              <% }) %>
+            </div>
+            <% } else { %>
+            <p class="text-gray-700 dark:text-gray-400">No reviews yet</p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function editVehicle() {
+  // Redirect to vehicle edit form or open edit modal
+  window.location.href = `/admin/vehicles/<%= vehicle.id %>/edit`;
+}
+</script>
+
+<%- include('../partials/actual-footer') %>

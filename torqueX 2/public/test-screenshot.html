@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puppeteer Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        h1 {
+            font-size: 3em;
+            text-align: center;
+        }
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #4CAF50;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Puppeteer Works!</h1>
+    <div class="box">
+        <h2>This page proves:</h2>
+        <ul>
+            <li>✅ Puppeteer can navigate to pages</li>
+            <li>✅ Screenshots capture actual content</li>
+            <li>✅ CSS styles are rendered</li>
+            <li>✅ The browser is NOT showing a black screen</li>
+        </ul>
+    </div>
+    <div class="success">
+        🚀 Your Puppeteer setup is working correctly!
+    </div>
+    <div class="box">
+        <p><strong>The Issue:</strong> Your auth pages return 401 because Clerk's middleware blocks non-authenticated requests from Puppeteer.</p>
+        <p><strong>Your E2E Tests:</strong> They pass because they only verify the URL loads (which it does, with a 401), not that the page content renders.</p>
+    </div>
+</body>
+</html>

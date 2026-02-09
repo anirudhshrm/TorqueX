@@ -1,0 +1,408 @@
+<%- include('../partials/header') %>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-800 text-white">
+    <div class="p-4 bg-gray-900">
+      <h2 class="text-xl font-bold">TorqueX Admin</h2>
+    </div>
+    <nav class="p-2">
+      <ul class="space-y-1">
+        <li>
+          <a href="/admin/dashboard" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/admin/vehicles" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Vehicles
+          </a>
+        </li>
+        <li>
+          <a href="/admin/bookings" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Bookings
+          </a>
+        </li>
+        <li>
+          <a href="/admin/deals" class="flex items-center px-4 py-2 text-gray-200 bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Deals
+          </a>
+        </li>
+        <li>
+          <a href="/admin/broadcasts" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+            Broadcasts
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 bg-gray-900">
+    <header class="bg-gray-800 shadow">
+      <div class="max-w-7xl mx-auto py-4 px-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Manage Deals</h1>
+        <button id="addDealBtn" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Add Deal
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 px-6">
+      <!-- Success/Error Messages -->
+      <% if (locals.successMessage && successMessage.length > 0) { %>
+        <div class="bg-green-900/30 border-l-4 border-green-500 text-green-400 p-4 mb-6" role="alert">
+          <p><%= successMessage %></p>
+        </div>
+      <% } %>
+      
+      <% if (locals.errorMessage && errorMessage.length > 0) { %>
+        <div class="bg-red-900/30 border-l-4 border-red-500 text-red-400 p-4 mb-6" role="alert">
+          <p><%= errorMessage %></p>
+        </div>
+      <% } %>
+      
+      <!-- Deal List -->
+      <div class="bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-600">
+            <thead class="bg-gray-700">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Code</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Discount</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Valid From</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Valid Until</th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="bg-gray-700 divide-y divide-gray-600">
+              <% if (deals && deals.length > 0) { %>
+                <% deals.forEach(deal => { 
+                  const isExpired = new Date(deal.validUntil) < new Date();
+                  const isActive = deal.isActive && !isExpired;
+                %>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-100"><%= deal.code %></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-100">
+                        <%= deal.discountType === 'PERCENTAGE' ? deal.discountValue.toFixed(0) + '%' : '$' + deal.discountValue.toFixed(2) %>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-300"><%= deal.description || 'No description' %></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-100"><%= new Date(deal.validFrom).toLocaleDateString() %></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-100"><%= new Date(deal.validUntil).toLocaleDateString() %></div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <% if (isExpired) { %>
+                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-900/30 text-red-400">
+                          Expired
+                        </span>
+                      <% } else if (!deal.isActive) { %>
+                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900/30 text-yellow-400">
+                          Inactive
+                        </span>
+                      <% } else { %>
+                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900/30 text-green-400">
+                          Active
+                        </span>
+                      <% } %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button 
+                        class="text-blue-400 hover:text-blue-300 mr-3 edit-deal-btn" 
+                        data-id="<%= deal.id %>"
+                        data-code="<%= deal.code %>"
+                        data-title="<%= deal.title %>"
+                        data-description="<%= deal.description || '' %>"
+                        data-discount-type="<%= deal.discountType %>"
+                        data-discount-value="<%= deal.discountValue %>"
+                        data-min-purchase="<%= deal.minPurchase || '' %>"
+                        data-valid-from="<%= deal.validFrom.toISOString().split('T')[0] %>"
+                        data-valid-until="<%= deal.validUntil.toISOString().split('T')[0] %>"
+                        data-is-active="<%= deal.isActive %>"
+                      >
+                        Edit
+                      </button>
+                      <form class="inline-block delete-form" data-id="<%= deal.id %>" onsubmit="return false;">
+                        <button type="button" class="text-red-400 hover:text-red-300 delete-deal-btn">
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-400">
+                    No deals found. Add your first deal!
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Add/Edit Deal Modal -->
+<div id="dealModal" class="fixed inset-0 z-10 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" id="modalOverlay"></div>
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    <div class="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <form id="dealForm" method="POST" action="/admin/deals" class="p-6">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" id="dealId" name="dealId">
+        <h3 class="text-lg leading-6 font-medium text-white mb-4" id="modalTitle">Add New Deal</h3>
+        
+        <div class="mb-4">
+          <label for="dealCode" class="block text-sm font-medium text-gray-300">Code*</label>
+          <input type="text" name="code" id="dealCode" class="mt-1 block w-full border border-gray-600 bg-gray-700 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+        </div>
+        
+        <div class="mb-4">
+          <label for="dealDescription" class="block text-sm font-medium text-gray-300">Description</label>
+          <textarea name="description" id="dealDescription" rows="3" class="mt-1 block w-full border border-gray-600 bg-gray-700 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+        </div>
+        
+        <div class="mb-4">
+          <label for="dealDiscount" class="block text-sm font-medium text-gray-300">Discount Percentage*</label>
+          <div class="mt-1 flex rounded-md shadow-sm">
+            <input type="number" name="discount" id="dealDiscount" min="1" max="99" class="focus:ring-blue-500 focus:border-blue-500 block w-full rounded-none rounded-l-md sm:text-sm border-gray-600 bg-gray-700 text-white" required>
+            <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-600 bg-gray-600 text-gray-300 sm:text-sm">
+              %
+            </span>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <label for="dealValidFrom" class="block text-sm font-medium text-gray-300">Valid From*</label>
+          <input type="date" name="validFrom" id="dealValidFrom" class="mt-1 block w-full border border-gray-600 bg-gray-700 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+        </div>
+        
+        <div class="mb-4">
+          <label for="dealValidUntil" class="block text-sm font-medium text-gray-300">Valid Until*</label>
+          <input type="date" name="validUntil" id="dealValidUntil" class="mt-1 block w-full border border-gray-600 bg-gray-700 text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+        </div>
+        
+        <div class="mb-4 flex items-center">
+          <input type="checkbox" id="isActive" name="isActive" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+          <label for="isActive" class="ml-2 block text-sm text-gray-300">Active</label>
+        </div>
+        
+        <div class="flex justify-end mt-6">
+          <button type="button" id="cancelBtn" class="mr-3 px-4 py-2 border border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-300 bg-gray-700 hover:bg-gray-600">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Elements
+  const dealModal = document.getElementById('dealModal');
+  const dealForm = document.getElementById('dealForm');
+  const modalTitle = document.getElementById('modalTitle');
+  const dealId = document.getElementById('dealId');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
+  
+  // Show deal modal for adding new deal
+  document.getElementById('addDealBtn').addEventListener('click', function() {
+    // Reset the form
+    dealForm.reset();
+    dealForm.action = '/deals';
+    dealForm.method = 'POST';
+    
+    // Remove any _method field if it exists
+    const methodField = dealForm.querySelector('input[name="_method"]');
+    if (methodField) {
+      methodField.remove();
+    }
+    
+    // Set default values
+    const today = new Date();
+    const nextMonth = new Date();
+    nextMonth.setMonth(today.getMonth() + 1);
+    
+    document.getElementById('dealValidFrom').value = today.toISOString().split('T')[0];
+    document.getElementById('dealValidUntil').value = nextMonth.toISOString().split('T')[0];
+    document.getElementById('isActive').checked = true;
+    
+    modalTitle.textContent = 'Add New Deal';
+    dealModal.classList.remove('hidden');
+  });
+  
+  // Handle form submission with fetch API
+  dealForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Collect form data
+    const formData = new FormData(dealForm);
+    const data = {};
+    formData.forEach((value, key) => {
+      // Handle checkbox
+      if (key === 'isActive') {
+        data[key] = true;
+      } else {
+        data[key] = value;
+      }
+    });
+    
+    // Set isActive to false if checkbox is not checked
+    if (!formData.has('isActive')) {
+      data['isActive'] = false;
+    }
+    
+    // Determine if this is a create or update operation
+    // Always use POST method with method-override for PUT
+    const url = dealForm.action;
+    
+    // Use fetch API to send the request as POST with _method for PUT
+    // Get CSRF token from the form
+    const csrfToken = dealForm.querySelector('input[name="_csrf"]')?.value;
+    
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'CSRF-Token': csrfToken
+      },
+      body: JSON.stringify(data),
+      credentials: 'same-origin'
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        return response.json().then(data => {
+          throw new Error(data.message || 'An error occurred');
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert(error.message || 'Failed to save deal. Please try again.');
+    });
+  });
+  
+  // Hide modal on overlay click
+  modalOverlay.addEventListener('click', function() {
+    dealModal.classList.add('hidden');
+  });
+  
+  // Cancel button
+  cancelBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    dealModal.classList.add('hidden');
+  });
+  
+  // Edit deal buttons
+  document.querySelectorAll('.edit-deal-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const deal = btn.dataset;
+      
+      // Update form action and method for updating
+      dealForm.action = `/admin/deals/${deal.id}`;
+      dealForm.method = 'POST';
+      
+      // Add a hidden method field for PUT request
+      let methodField = dealForm.querySelector('input[name="_method"]');
+      if (!methodField) {
+        methodField = document.createElement('input');
+        methodField.type = 'hidden';
+        methodField.name = '_method';
+        dealForm.appendChild(methodField);
+      }
+      methodField.value = 'PUT';
+      
+      // Set form values
+      dealId.value = deal.id;
+      document.getElementById('dealCode').value = deal.code;
+      document.getElementById('dealDescription').value = deal.description;
+      document.getElementById('dealDiscount').value = parseFloat(deal.discount);
+      document.getElementById('dealValidFrom').value = deal.validFrom;
+      document.getElementById('dealValidUntil').value = deal.validUntil;
+      document.getElementById('isActive').checked = deal.isActive === 'true';
+      
+      modalTitle.textContent = 'Edit Deal';
+      dealModal.classList.remove('hidden');
+    });
+  });
+  
+  // Delete deal buttons
+  document.querySelectorAll('.delete-deal-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const form = btn.closest('.delete-form');
+      const dealId = form.dataset.id;
+      
+      if (confirm('Are you sure you want to delete this deal?')) {
+        // Create a form with method-override to submit the DELETE request
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'POST';
+        deleteForm.action = `/admin/deals/${dealId}`;
+        
+        // Add method override field
+        const methodField = document.createElement('input');
+        methodField.type = 'hidden';
+        methodField.name = '_method';
+        methodField.value = 'DELETE';
+        deleteForm.appendChild(methodField);
+        
+        // Add form to document and submit
+        document.body.appendChild(deleteForm);
+        deleteForm.submit();
+      }
+    });
+  });
+
+  // When page loads, add flash message timeouts
+  const flashMessages = document.querySelectorAll('.bg-green-100, .bg-red-100');
+  if (flashMessages.length > 0) {
+    setTimeout(function() {
+      flashMessages.forEach(function(message) {
+        message.style.opacity = '0';
+        message.style.transition = 'opacity 0.5s';
+        setTimeout(function() { message.remove(); }, 500);
+      });
+    }, 4000);
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

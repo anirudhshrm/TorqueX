@@ -1,0 +1,37 @@
+services:
+  # Web Service (Main Application)
+  - type: web
+    name: torquex-web
+    runtime: node
+    buildCommand: npm install && npm run prisma:generate
+    startCommand: npm run start:no-clerk
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SKIP_CLERK
+        value: true
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: torquex-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: torquex-redis
+          property: connectionString
+      - key: PORT
+        value: 10000
+
+  # PostgreSQL Database
+  - type: pserv
+    name: torquex-db
+    ipAllowList: []  # Only accessible by other services in this project
+
+  # Redis Cache
+  - type: redis
+    name: torquex-redis
+    ipAllowList: []  # Only accessible by other services in this project

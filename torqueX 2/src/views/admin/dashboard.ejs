@@ -1,0 +1,598 @@
+<%- include('../partials/header') %>
+
+<div class="flex min-h-screen dashboard-container">
+  <!-- Sidebar -->
+  <div class="w-64 dashboard-sidebar">
+    <div class="dashboard-sidebar-header">
+      <h2>TorqueX Admin</h2>
+    </div>
+    <nav class="dashboard-nav">
+      <ul>
+        <li class="dashboard-nav-item">
+          <a href="/admin/dashboard" class="dashboard-nav-link active">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="dashboard-nav-item">
+          <a href="/admin/stats" class="dashboard-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Statistics
+          </a>
+        </li>
+        <li class="dashboard-nav-item">
+          <a href="/admin/vehicles" class="dashboard-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Vehicles
+          </a>
+        </li>
+        <li class="dashboard-nav-item">
+          <a href="/admin/vehicle-requests" class="dashboard-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Vehicle Requests
+            <% if (stats && stats.vehicleRequestStats && stats.vehicleRequestStats.pending > 0) { %>
+              <span class="dashboard-nav-badge">
+                <%= stats.vehicleRequestStats.pending %>
+              </span>
+            <% } %>
+          </a>
+        </li>
+        <li class="dashboard-nav-item">
+          <a href="/admin/bookings" class="dashboard-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Bookings
+          </a>
+        </li>
+        <li class="dashboard-nav-item">
+          <a href="/admin/broadcasts" class="dashboard-nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+            Broadcasts
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 dashboard-main">
+    <header class="dashboard-header">
+      <div class="dashboard-header-content">
+        <h1 class="dashboard-title">Dashboard</h1>
+        <div class="dashboard-user-info">
+          <span class="dashboard-welcome">Welcome, <%= user.name %></span>
+          <a href="/auth/logout" class="dashboard-logout-btn">Logout</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-8 px-6">
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Vehicles Card -->
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Total Vehicles</div>
+            <div class="stat-value"><%= stats.vehicleStats.total %></div>
+            <div class="stat-sublabel">
+              <span class="text-green-600 dark:text-green-400"><%= stats.vehicleStats.available %> available</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Active Bookings Card -->
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Active Bookings</div>
+            <div class="stat-value"><%= stats.bookingStats.active %></div>
+            <div class="stat-sublabel">
+              <span class="text-blue-600 dark:text-blue-400"><%= stats.bookingStats.today %> today</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total Users Card -->
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-purple">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value"><%= stats.userStats.total %></div>
+            <div class="stat-sublabel">
+              <span class="text-purple-600 dark:text-purple-400"><%= stats.userStats.active %> active</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total Revenue Card -->
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-yellow">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value">$<%= (stats.bookingStats.totalRevenue || 0).toLocaleString() %></div>
+            <div class="stat-sublabel">
+              <span class="text-green-600 dark:text-green-400">All time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Redis Cache Status -->
+      <div class="dashboard-card mb-8">
+        <div class="dashboard-card-header">
+          <h3 class="dashboard-card-title flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+            </svg>
+            Redis Cache Status
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex items-center">
+              <div class="p-3 rounded-full <%= redisStatus.connected ? 'bg-green-500' : 'bg-red-500' %> bg-opacity-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 <%= redisStatus.connected ? 'text-green-500' : 'text-red-500' %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Connection Status</h4>
+                <p class="text-lg font-bold <%= redisStatus.connected ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' %>" id="redis-status-text">
+                  <%= redisStatus.connected ? 'Connected' : 'Disconnected' %>
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-blue-500 bg-opacity-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Ping Response</h4>
+                <p class="text-lg font-bold text-gray-900 dark:text-white" id="redis-ping-text">
+                  <%= redisStatus.ping || 'N/A' %>
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="p-3 rounded-full bg-purple-500 bg-opacity-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Cache Keys</h4>
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  <%= redisStatus.totalKeys || 0 %>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Cached Data Overview -->
+          <% if (redisStatus.connected && redisStatus.cacheKeys && redisStatus.cacheKeys.length > 0) { %>
+          <div class="mt-6">
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3 flex items-center">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+              </svg>
+              Cached Data Types
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <% redisStatus.cacheKeys.forEach(cache => { %>
+                <div class="cache-card cache-card-<%= cache.color %>">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="cache-title"><%= cache.name %></span>
+                    <span class="cache-badge">
+                      <%= cache.count %>
+                    </span>
+                  </div>
+                  <% if (cache.keys && cache.keys.length > 0) { %>
+                  <div class="mt-3 space-y-1">
+                    <p class="text-xs font-medium text-gray-600 mb-1">Sample keys:</p>
+                    <% cache.keys.forEach(key => { %>
+                      <p class="cache-key-text" title="<%= key %>">• <%= key %></p>
+                    <% }) %>
+                    <% if (cache.count > 3) { %>
+                      <p class="text-xs text-gray-400 mt-1">+ <%= cache.count - 3 %> more...</p>
+                    <% } %>
+                  </div>
+                  <% } %>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+          <% } else if (redisStatus.connected) { %>
+          <div class="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 dark:text-yellow-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                <strong>No cache data yet.</strong> Visit <a href="/vehicles" class="underline">vehicles</a>, <a href="/deals" class="underline">deals</a>, or <a href="/" class="underline">homepage</a> to populate the cache.
+              </p>
+            </div>
+          </div>
+          <% } %>
+          
+          <div class="mt-6 flex flex-wrap gap-2">
+            <a href="/admin/redis" class="btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              View Full Redis Demo
+            </a>
+            <a href="/admin/cache-viewer" class="btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              Cache Viewer
+            </a>
+            <button onclick="window.location.reload()" class="btn-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh Data
+            </button>
+          </div>
+          
+          <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p class="text-sm text-gray-700 dark:text-blue-100">
+              <strong>Note:</strong> Redis is being used for session management and data caching to improve application performance.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Vehicle Statistics -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Vehicle Statistics</h3>
+            <a href="/admin/vehicles" class="text-blue-600 hover:text-blue-800 text-sm">View All</a>
+          </div>
+        </div>
+        <div class="px-6 py-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Vehicle Type Distribution -->
+            <div>
+              <h4 class="text-md font-medium text-gray-700 dark:text-gray-200 mb-2">Vehicle Types</h4>
+              <div class="space-y-2">
+                <% if (stats.vehicleStats.byType && stats.vehicleStats.byType.length > 0) { %>
+                  <% stats.vehicleStats.byType.forEach(type => { %>
+                    <div class="flex items-center">
+                      <span class="text-sm font-medium text-gray-600 dark:text-gray-300 w-24"><%= type.type %></span>
+                      <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        <div 
+                          class="bg-blue-600 dark:bg-blue-500 h-2.5 rounded-full" 
+                          style="width: <%= Math.round(((type._count || 0) / stats.vehicleStats.total || 1) * 100) || 0 %>%"
+                        ></div>
+                      </div>
+                      <span class="text-sm font-medium text-gray-600 dark:text-gray-300 ml-4"><%= type._count || 0 %></span>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <div class="text-gray-500 dark:text-gray-400">No vehicle type data available</div>
+                <% } %>
+              </div>
+            </div>
+            
+            <!-- Vehicle Availability -->
+            <div>
+              <h4 class="text-md font-medium text-gray-700 dark:text-gray-200 mb-2">Availability</h4>
+              <div class="flex items-center space-x-6">
+                <div class="flex flex-col items-center">
+                  <div class="text-3xl font-bold text-green-600 dark:text-green-400"><%= stats.vehicleStats.available %></div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">Available</div>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="text-3xl font-bold text-red-600 dark:text-red-400"><%= stats.vehicleStats.unavailable %></div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">Unavailable</div>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="text-3xl font-bold text-yellow-600 dark:text-yellow-400"><%= stats.vehicleRequestStats.pending %></div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">Pending Requests</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vehicle Requests -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Vehicle Requests</h3>
+            <a href="/admin/vehicle-requests" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm">View All</a>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  User
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Vehicle Details
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Status
+                </th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <% if (!recentVehicleRequests || recentVehicleRequests.length === 0) { %>
+                <tr>
+                  <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    No pending vehicle requests
+                  </td>
+                </tr>
+              <% } else { %>
+                <% recentVehicleRequests.forEach(request => { %>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <%= request.user.name %>
+                      </div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <%= request.user.email %>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="text-sm text-gray-900 dark:text-gray-100">
+                        <%= request.make %> <%= request.model %>
+                      </div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <%= request.year %> · <%= request.type %>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <% if (request.status === 'PENDING') { %>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                          Pending
+                        </span>
+                      <% } else if (request.status === 'APPROVED') { %>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          Approved
+                        </span>
+                      <% } else if (request.status === 'REJECTED') { %>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                          Rejected
+                        </span>
+                      <% } %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <% if (request.status === 'PENDING') { %>
+                        <a href="/admin/vehicle-requests" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">Review</a>
+                      <% } else { %>
+                        <a href="/admin/vehicle-requests" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">View</a>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Bookings -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden mb-8">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Bookings</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Customer
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Vehicle
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Status
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Dates
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Price
+                </th>
+                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
+              <% recentBookings.forEach(booking => { %>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                        <%= booking.user.name %>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900 dark:text-gray-200"><%= booking.vehicle.make %> <%= booking.vehicle.model %></div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400"><%= booking.vehicle.year %></div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <% if (booking.status === 'CONFIRMED') { %>
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        Confirmed
+                      </span>
+                    <% } else if (booking.status === 'PENDING') { %>
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        Pending
+                      </span>
+                    <% } else if (booking.status === 'CANCELED') { %>
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        Canceled
+                      </span>
+                    <% } else if (booking.status === 'COMPLETED') { %>
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                        Completed
+                      </span>
+                    <% } %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <%= new Date(booking.startDate).toLocaleDateString() %> - <%= new Date(booking.endDate).toLocaleDateString() %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    $<%= booking.totalPrice.toFixed(2) %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a href="/admin/bookings/<%= booking.id %>" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">View</a>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <a href="/admin/bookings" class="text-sm font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300">View all bookings</a>
+        </div>
+      </div>
+      
+      <!-- Activity & Analytics Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Activity -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Activity</h3>
+          </div>
+          <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% recentBookings.forEach(booking => { %>
+              <div class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div class="ml-3">
+                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      Booking #<%= booking.id %>
+                    </div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                      <%= booking.user ? booking.user.name : 'Unknown User' %> booked <%= booking.vehicle ? booking.vehicle.name : 'Unknown Vehicle' %>
+                    </div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Status: <span class="<%= booking.status === 'COMPLETED' ? 'text-green-500 dark:text-green-400' : booking.status === 'CANCELLED' ? 'text-red-500 dark:text-red-400' : 'text-blue-500 dark:text-blue-400' %>">
+                        <%= booking.status %>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="ml-auto">
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><%= booking.startDate ? new Date(booking.startDate).toLocaleDateString() : 'Date not available' %></p>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Popular Vehicles</h3>
+          </div>
+          <div class="px-6 py-4">
+            <% popularVehicles.forEach(vehicle => { %>
+              <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+                <div class="flex items-center">
+                  <div class="h-10 w-10 rounded-md flex-shrink-0 overflow-hidden">
+                    <img 
+                      src="<%= vehicle.images && vehicle.images[0] || '/images/placeholder-car.jpg' %>" 
+                      alt="<%= vehicle.name %>" 
+                      class="h-full w-full object-cover"
+                      onerror="this.src='/images/placeholder-car.jpg'; this.onerror=null;"
+                    >
+                  </div>
+                  <br>
+                  <div class="ml-3">
+                    <br>
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= vehicle.name %></p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400"><%= vehicle._count?.bookings || 0 %> bookings</p>
+                  </div>
+                </div>
+                <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  $<%= vehicle.pricePerDay ? vehicle.pricePerDay.toFixed(2) : '0.00' %>/day
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+async function checkRedisStatus() {
+  try {
+    const response = await fetch('/admin/redis-status');
+    const data = await response.json();
+    
+    // Update status text
+    const statusEl = document.getElementById('redis-status-text');
+    const pingEl = document.getElementById('redis-ping-text');
+    
+    if (data.connected) {
+      statusEl.textContent = 'Connected';
+      statusEl.className = 'text-lg font-bold text-green-600';
+    } else {
+      statusEl.textContent = 'Disconnected';
+      statusEl.className = 'text-lg font-bold text-red-600';
+    }
+    
+    pingEl.textContent = data.ping || 'N/A';
+    
+    // Show success message
+    console.log('Redis Status:', data);
+  } catch (error) {
+    console.error('Error checking Redis status:', error);
+  }
+}
+</script>
+
+<%- include('../partials/footer') %>

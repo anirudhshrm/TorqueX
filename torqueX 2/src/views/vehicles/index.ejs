@@ -1,0 +1,173 @@
+<%- include('../partials/header') %>
+<link rel="stylesheet" href="/stylesheets/vehicles.css">
+
+<div class="vehicles-header">
+  <h1 class="vehicles-header-title">Browse Our Vehicles</h1>
+  <p class="vehicles-header-subtitle">Discover your perfect ride from our premium collection</p>
+</div>
+
+<div class="vehicles-container">
+  <div class="vehicles-layout">
+    <!-- Filters Sidebar -->
+    <aside class="vehicles-filters">
+      <h2 class="vehicles-filters-title">Filters</h2>
+      
+      <form id="filter-form" method="GET" action="/vehicles">
+        <!-- Vehicle Type Filter -->
+        <div class="filter-section">
+          <label class="filter-section-title">Vehicle Type</label>
+          <div>
+            <% types.forEach(type => { %>
+              <label class="filter-option">
+                <input 
+                  type="radio" 
+                  name="type" 
+                  value="<%= type %>" 
+                  <%= filters.type === type ? 'checked' : '' %>
+                >
+                <span class="filter-option-label"><%= type %></span>
+              </label>
+            <% }) %>
+            <label class="filter-option">
+              <input 
+                type="radio" 
+                name="type" 
+                value="" 
+                <%= !filters.type ? 'checked' : '' %>
+              >
+              <span class="filter-option-label">All Types</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="filter-divider"></div>
+        
+        <!-- Price Range Filter -->
+        <div class="filter-section">
+          <label class="filter-section-title">Price Range (per day)</label>
+          <div class="price-range-inputs">
+            <input 
+              type="number" 
+              name="minPrice" 
+              placeholder="Min" 
+              class="price-input"
+              value="<%= filters.minPrice || '' %>"
+              min="0"
+            >
+            <span class="price-separator">-</span>
+            <input 
+              type="number" 
+              name="maxPrice" 
+              placeholder="Max" 
+              class="price-input"
+              value="<%= filters.maxPrice || '' %>"
+              min="0"
+            >
+          </div>
+        </div>
+        
+        <div class="filter-divider"></div>
+        
+        <!-- Availability Filter -->
+        <div class="filter-section">
+          <label class="filter-option">
+            <input 
+              type="checkbox" 
+              name="available" 
+              value="true" 
+              <%= filters.available === 'true' ? 'checked' : '' %>
+            >
+            <span class="filter-option-label">Show Available Only</span>
+          </label>
+        </div>
+        
+        <!-- Apply Filters Button -->
+        <button type="submit" class="filter-apply-btn">
+          Apply Filters
+        </button>
+        
+        <!-- Reset Filters Link -->
+        <a href="/vehicles" class="filter-reset-link">Reset all filters</a>
+      </form>
+    </aside>
+    
+    <!-- Vehicles Grid -->
+    <div class="vehicles-grid-wrapper">
+      <% if (vehicles.length === 0) { %>
+        <div class="vehicles-empty">
+          <svg class="vehicles-empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h2 class="vehicles-empty-title">No Vehicles Found</h2>
+          <p class="vehicles-empty-text">We couldn't find any vehicles matching your criteria. Try adjusting your filters.</p>
+          <a href="/vehicles" class="vehicles-empty-btn">
+            View All Vehicles
+          </a>
+        </div>
+      <% } else { %>
+        <div class="vehicles-grid">
+          <% vehicles.forEach(vehicle => { %>
+            <a href="/vehicles/<%= vehicle.id %>" class="vehicle-card">
+              <!-- Image Container -->
+              <div class="vehicle-image-container">
+                <img 
+                  src="<%= vehicle.images && vehicle.images.length > 0 ? vehicle.images[0] : '/images/placeholder-car.jpg' %>" 
+                  alt="<%= vehicle.name %>"
+                  class="vehicle-image"
+                  onerror="this.src='/images/placeholder-car.jpg'; this.onerror=null;"
+                >
+                <div class="vehicle-image-overlay"></div>
+                <% if (!vehicle.availability) { %>
+                  <span class="vehicle-badge unavailable">
+                    Unavailable
+                  </span>
+                <% } else { %>
+                  <span class="vehicle-badge available">
+                    Available
+                  </span>
+                <% } %>
+              </div>
+              
+              <!-- Card Content -->
+              <div class="vehicle-content">
+                <div class="vehicle-header">
+                  <h3 class="vehicle-name"><%= vehicle.name %></h3>
+                  <p class="vehicle-type"><%= vehicle.type %></p>
+                </div>
+                
+                <!-- Specs Row -->
+                <div class="vehicle-specs">
+                  <div class="vehicle-spec">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span><%= vehicle.specs && vehicle.specs.year ? vehicle.specs.year : '2024' %></span>
+                  </div>
+                  <div class="vehicle-spec">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span>Auto</span>
+                  </div>
+                </div>
+                
+                <!-- Price and Button -->
+                <div class="vehicle-footer">
+                  <div class="vehicle-price">
+                    <span class="vehicle-price-amount">$<%= vehicle.pricePerDay %></span>
+                    <span class="vehicle-price-period">/day</span>
+                  </div>
+                  <div class="vehicle-view-btn">
+                    View Details
+                  </div>
+                </div>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

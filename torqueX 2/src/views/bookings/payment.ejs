@@ -1,0 +1,340 @@
+<%- include('../partials/header') %>
+
+<div class="bg-gray-50 min-h-screen py-12">
+  <div class="container mx-auto px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <!-- Payment Form -->
+        <div class="lg:col-span-3">
+          <div class="bg-white rounded-xl shadow-md p-8 border border-gray-200">
+            <h1 class="text-3xl font-bold mb-2">Complete Payment</h1>
+            <p class="text-gray-600 mb-8">Secure payment powered by Stripe</p>
+
+            <!-- Booking Summary Card -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-8">
+              <h3 class="font-semibold text-lg mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                  <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                </svg>
+                Booking Summary
+              </h3>
+              
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p class="text-sm text-gray-600">Vehicle</p>
+                  <p class="font-semibold text-gray-900"><%= booking.vehicle.name %></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Type</p>
+                  <p class="font-semibold text-gray-900"><%= booking.vehicle.type %></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Pickup Date</p>
+                  <p class="font-medium text-gray-900"><%= new Date(booking.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Return Date</p>
+                  <p class="font-medium text-gray-900"><%= new Date(booking.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Duration</p>
+                  <p class="font-medium text-gray-900"><%= duration %> <%= duration === 1 ? 'day' : 'days' %></p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Rate</p>
+                  <p class="font-medium text-gray-900">$<%= booking.vehicle.pricePerDay.toFixed(2) %>/day</p>
+                </div>
+              </div>
+
+              <div class="border-t border-blue-200 pt-4 mt-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-lg font-semibold text-gray-900">Total Amount:</span>
+                  <span class="text-2xl font-bold text-blue-600">$<%= booking.totalPrice.toFixed(2) %></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Form -->
+            <form id="payment-form" class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">
+                  Payment Details
+                </label>
+                
+                <!-- Stripe Payment Element will be inserted here -->
+                <div id="payment-element" class="p-4 border border-gray-200 rounded-xl bg-white">
+                  <!-- Stripe.js injects the Payment Element -->
+                </div>
+                
+                <!-- Error messages -->
+                <div id="payment-message" class="hidden text-red-600 text-sm mt-3 p-3 bg-red-50 rounded-xl border border-red-200"></div>
+              </div>
+
+              <!-- Customer Info -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value="<%= booking.user.email %>"
+                    readonly
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-700"
+                  >
+                </div>
+                <div>
+                  <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value="<%= booking.user.name || '' %>"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Full Name"
+                  >
+                </div>
+              </div>
+
+              <!-- Terms Checkbox -->
+              <div class="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="terms-payment"
+                  required
+                  class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                >
+                <label for="terms-payment" class="text-sm text-gray-700">
+                  I authorize TorqueX to charge my payment method for the total amount and agree to the <a href="/terms" class="text-blue-600 hover:underline font-medium">Terms and Conditions</a> and <a href="/privacy" class="text-blue-600 hover:underline font-medium">Privacy Policy</a>.
+                </label>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                <a href="/vehicles" class="flex-1 px-6 py-3 border-2 border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition text-center">
+                  Cancel
+                </a>
+                <button
+                  id="submit-payment"
+                  type="submit"
+                  class="flex-1 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  <svg id="spinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span id="button-text">Pay $<%= booking.totalPrice.toFixed(2) %></span>
+                </button>
+              </div>
+            </form>
+
+            <!-- Security Badge -->
+            <div class="mt-8 pt-8 border-t border-gray-200">
+              <div class="flex items-start gap-3">
+                <svg class="w-6 h-6 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <div>
+                  <p class="font-semibold text-gray-900 mb-1">Secure Payment</p>
+                  <p class="text-sm text-gray-600">
+                    Your payment information is encrypted and processed securely by Stripe. We never store your card details.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking Details Sidebar -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-xl shadow-md p-6 sticky top-6 border border-gray-200">
+            <h3 class="text-xl font-bold mb-6">Order Summary</h3>
+            
+            <!-- Vehicle Image -->
+            <% if (booking.vehicle.images && booking.vehicle.images.length > 0) { %>
+              <img 
+                src="<%= booking.vehicle.images[0] %>" 
+                alt="<%= booking.vehicle.name %>"
+                class="w-full h-32 object-cover rounded-xl mb-6"
+              >
+            <% } %>
+
+            <div class="space-y-4">
+              <div class="pb-4 border-b border-gray-200">
+                <p class="text-sm text-gray-600 mb-1">Vehicle</p>
+                <p class="font-semibold text-gray-900"><%= booking.vehicle.name %></p>
+                <p class="text-sm text-gray-500"><%= booking.vehicle.type %></p>
+              </div>
+              
+              <div class="pb-4 border-b border-gray-200">
+                <p class="text-sm text-gray-600 mb-1">Rental Period</p>
+                <p class="font-semibold text-gray-900"><%= duration %> <%= duration === 1 ? 'Day' : 'Days' %></p>
+                <p class="text-xs text-gray-500 mt-1">
+                  <%= new Date(booking.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %> - <%= new Date(booking.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) %>
+                </p>
+              </div>
+              
+              <div class="pb-4 border-b border-gray-200">
+                <div class="flex justify-between items-center mb-2">
+                  <p class="text-sm text-gray-600">Daily Rate</p>
+                  <p class="font-medium text-gray-900">$<%= booking.vehicle.pricePerDay.toFixed(2) %></p>
+                </div>
+                <div class="flex justify-between items-center">
+                  <p class="text-sm text-gray-600">× <%= duration %> <%= duration === 1 ? 'day' : 'days' %></p>
+                  <p class="font-medium text-gray-900">$<%= booking.totalPrice.toFixed(2) %></p>
+                </div>
+              </div>
+              
+              <div class="bg-blue-50 p-4 rounded-xl">
+                <div class="flex justify-between items-center">
+                  <p class="text-sm font-medium text-gray-700">Total Due Today</p>
+                  <p class="text-2xl font-bold text-blue-600">$<%= booking.totalPrice.toFixed(2) %></p>
+                </div>
+              </div>
+
+              <!-- What's Included -->
+              <div class="mt-6 pt-6 border-t border-gray-200">
+                <p class="text-sm font-medium text-gray-900 mb-3">What's Included:</p>
+                <ul class="space-y-2 text-sm text-gray-600">
+                  <li class="flex items-start gap-2">
+                    <svg class="text-green-600 flex-shrink-0" width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Unlimited Mileage</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <svg class="text-green-600 flex-shrink-0" width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Basic Insurance Coverage</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <svg class="text-green-600 flex-shrink-0" width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>24/7 Roadside Assistance</span>
+                  </li>
+                  <li class="flex items-start gap-2">
+                    <svg class="text-green-600 flex-shrink-0" width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Free Cancellation (24h)</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Load Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('Initializing Stripe payment...');
+  
+  const stripeKey = '<%= stripePublicKey %>';
+  const clientSecret = '<%= clientSecret %>';
+  
+  console.log('Stripe Key:', stripeKey ? 'Present' : 'Missing');
+  console.log('Client Secret:', clientSecret ? 'Present' : 'Missing');
+  
+  if (!stripeKey || !clientSecret) {
+    document.getElementById('payment-message').textContent = 'Payment system configuration error. Please contact support.';
+    document.getElementById('payment-message').classList.remove('hidden');
+    return;
+  }
+  
+  // Initialize Stripe with your publishable key
+  const stripe = Stripe(stripeKey);
+  
+  // Initialize Stripe Elements
+  const elements = stripe.elements({ clientSecret });
+  
+  // Create and mount the Payment Element
+  const paymentElement = elements.create('payment');
+  paymentElement.mount('#payment-element');
+  
+  console.log('Payment Element mounted successfully');
+  
+  // Handle form submission
+  const form = document.getElementById('payment-form');
+  const submitButton = document.getElementById('submit-payment');
+  const buttonText = document.getElementById('button-text');
+  const spinner = document.getElementById('spinner');
+  const messageContainer = document.getElementById('payment-message');
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Disable submit button and show loading
+    submitButton.disabled = true;
+    spinner.classList.remove('hidden');
+    buttonText.textContent = 'Processing...';
+    messageContainer.classList.add('hidden');
+    
+    try {
+      // Confirm the payment
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: window.location.origin + '/bookings/<%= booking.id %>/confirmation',
+        },
+        redirect: 'if_required'
+      });
+      
+      if (error) {
+        // Payment failed
+        messageContainer.textContent = error.message;
+        messageContainer.classList.remove('hidden');
+        submitButton.disabled = false;
+        spinner.classList.add('hidden');
+        buttonText.textContent = 'Pay $<%= booking.totalPrice.toFixed(2) %>';
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        // Payment succeeded - update booking status
+        const response = await fetch('/bookings/<%= booking.id %>/payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': '<%= csrfToken %>'
+          },
+          body: JSON.stringify({
+            paymentIntentId: paymentIntent.id,
+            _csrf: '<%= csrfToken %>'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Redirect to confirmation page
+          window.location.href = data.redirectUrl;
+        } else {
+          messageContainer.textContent = data.message || 'Payment processing failed';
+          messageContainer.classList.remove('hidden');
+          submitButton.disabled = false;
+          spinner.classList.add('hidden');
+          buttonText.textContent = 'Pay $<%= booking.totalPrice.toFixed(2) %>';
+        }
+      }
+    } catch (err) {
+      console.error('Payment error:', err);
+      messageContainer.textContent = 'An unexpected error occurred. Please try again.';
+      messageContainer.classList.remove('hidden');
+      submitButton.disabled = false;
+      spinner.classList.add('hidden');
+      buttonText.textContent = 'Pay $<%= booking.totalPrice.toFixed(2) %>';
+    }
+  });
+  
+  // Monitor changes to enable/disable submit button
+  paymentElement.on('change', (event) => {
+    submitButton.disabled = !event.complete;
+  });
+});
+</script>
+
+<%- include('../partials/footer') %>

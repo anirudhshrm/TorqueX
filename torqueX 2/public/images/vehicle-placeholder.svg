@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#e5e7eb"/>
+  <circle cx="100" cy="200" r="40" fill="#9ca3af"/>
+  <circle cx="300" cy="200" r="40" fill="#9ca3af"/>
+  <path d="M 120 160 L 280 160 L 300 120 L 100 120 Z" fill="#9ca3af"/>
+  <text x="200" y="60" font-size="24" text-anchor="middle" fill="#6b7280">Vehicle Image</text>
+  <text x="200" y="90" font-size="16" text-anchor="middle" fill="#9ca3af">Coming Soon</text>
+</svg>

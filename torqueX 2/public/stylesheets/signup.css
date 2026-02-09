@@ -1,0 +1,392 @@
+/* ==========================================
+   SIGNUP PAGE STYLES
+   Clean, modern design matching homepage & vehicles
+   ========================================== */
+
+/* ==========================================
+   WRAPPER & LAYOUT
+   ========================================== */
+.signup-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  position: relative;
+}
+
+.signup-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ==========================================
+   SIGNUP CARD
+   ========================================== */
+.signup-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.signup-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.dark .signup-card {
+  background: #1f2937;
+}
+
+/* ==========================================
+   HEADER SECTION
+   ========================================== */
+.signup-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.signup-title {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.signup-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.dark .signup-subtitle {
+  color: #9ca3af;
+}
+
+/* ==========================================
+   FORM STYLES
+   ========================================== */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.dark .form-label {
+  color: #e5e7eb;
+}
+
+.form-input {
+  padding: 0.875rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-input:hover:not(:focus) {
+  border-color: #d1d5db;
+}
+
+.dark .form-input {
+  background: #374151;
+  border-color: #4b5563;
+  color: white;
+}
+
+.dark .form-input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.dark .form-input::placeholder {
+  color: #9ca3af;
+}
+
+/* ==========================================
+   PASSWORD INPUT
+   ========================================== */
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-input {
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: #667eea;
+}
+
+.dark .password-toggle {
+  color: #9ca3af;
+}
+
+.dark .password-toggle:hover {
+  color: #667eea;
+}
+
+.eye-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==========================================
+   FORM OPTIONS (Terms Checkbox)
+   ========================================== */
+.form-options {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-top: 0.75rem;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.checkbox-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 0.25rem;
+  border: 2px solid #d1d5db;
+  cursor: pointer;
+  accent-color: #667eea;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.dark .checkbox-input {
+  border-color: #6b7280;
+}
+
+.checkbox-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  user-select: none;
+  line-height: 1.5;
+}
+
+.dark .checkbox-label {
+  color: #9ca3af;
+}
+
+.terms-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+  color: #764ba2;
+}
+
+/* ==========================================
+   SUBMIT BUTTON
+   ========================================== */
+.signup-submit-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.signup-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.signup-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================
+   CLERK CONTAINER
+   ========================================== */
+.clerk-container {
+  margin-top: 1.5rem;
+}
+
+.clerk-loading {
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  text-align: center;
+}
+
+.dark .clerk-loading {
+  background: #374151;
+}
+
+.clerk-loading p {
+  color: #6b7280;
+}
+
+.dark .clerk-loading p {
+  color: #9ca3af;
+}
+
+/* ==========================================
+   FOOTER SECTION
+   ========================================== */
+.signup-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dark .signup-footer {
+  border-top-color: #4b5563;
+}
+
+.login-text {
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.dark .login-text {
+  color: #9ca3af;
+}
+
+.login-link {
+  color: #667eea;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.login-link:hover {
+  color: #764ba2;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+@media (max-width: 640px) {
+  .signup-wrapper {
+    padding: 1rem;
+  }
+
+  .signup-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .signup-title {
+    font-size: 1.75rem;
+  }
+
+  .signup-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .form-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .password-input {
+    padding-right: 2.75rem;
+  }
+
+  .password-toggle {
+    right: 0.75rem;
+  }
+}
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signup-card {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+.form-input:focus,
+.signup-submit-btn:focus,
+.password-toggle:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.signup-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signup-submit-btn:disabled:hover {
+  transform: none;
+}
+
+/* ==========================================
+   DARK MODE SUPPORT
+   ========================================== */
+.dark .signup-wrapper {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+}

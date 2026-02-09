@@ -1,0 +1,15 @@
+node_modules
+.env
+.env.local
+.env.backup
+npm-debug.log
+.DS_Store
+coverage
+screenshots
+logs
+ssl
+*.key
+*.pem
+test_*.sh
+test-*.js
+final_deployment_test.sh

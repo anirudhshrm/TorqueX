@@ -1,0 +1,448 @@
+<%- include('../partials/header') %>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-800 text-white">
+    <div class="p-4 bg-gray-900">
+      <h2 class="text-xl font-bold">TorqueX Admin</h2>
+    </div>
+    <nav class="p-2">
+      <ul class="space-y-1">
+        <li>
+          <a href="/admin/dashboard" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/admin/vehicles" class="flex items-center px-4 py-2 text-gray-200 bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            Vehicles
+          </a>
+        </li>
+        <li>
+          <a href="/admin/bookings" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Bookings
+          </a>
+        </li>
+        <li>
+          <a href="/admin/broadcasts" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+            Broadcasts
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 bg-gray-100 dark:bg-gray-900">
+    <header class="bg-white dark:bg-gray-800 shadow">
+      <div class="max-w-7xl mx-auto py-4 px-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white"><%= vehicle ? 'Edit Vehicle' : 'Add New Vehicle' %></h1>
+        <div class="flex items-center">
+          <a href="/admin/vehicles" class="text-gray-600 hover:text-gray-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto py-6 px-6">
+      <!-- Flash Messages -->
+      <% if (locals.successMessages && successMessages.length > 0) { %>
+        <div class="bg-green-100 dark:bg-green-900/20 border-l-4 border-green-500 text-green-700 dark:text-green-200 p-4 mb-6" role="alert">
+          <p><%= successMessages[0] %></p>
+        </div>
+      <% } %>
+      
+      <% if (locals.errorMessages && errorMessages.length > 0) { %>
+        <div class="bg-red-100 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-200 p-4 mb-6" role="alert">
+          <p><%= errorMessages[0] %></p>
+        </div>
+      <% } %>
+      
+      <!-- Vehicle Form -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <form method="POST" action="<%= vehicle ? `/admin/vehicles/${vehicle.id}` : '/admin/vehicles' %>" class="p-6" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <!-- Vehicle Basic Info -->
+            <div class="sm:col-span-3">
+              <label for="make" class="block text-sm font-medium text-gray-700">Make</label>
+              <div class="mt-1">
+                <input 
+                  type="text" 
+                  name="make" 
+                  id="make" 
+                  value="<%= vehicle ? vehicle.make : '' %>" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="sm:col-span-3">
+              <label for="model" class="block text-sm font-medium text-gray-700">Model</label>
+              <div class="mt-1">
+                <input 
+                  type="text" 
+                  name="model" 
+                  id="model" 
+                  value="<%= vehicle ? vehicle.model : '' %>" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="year" class="block text-sm font-medium text-gray-700">Year</label>
+              <div class="mt-1">
+                <input 
+                  type="number" 
+                  name="year" 
+                  id="year" 
+                  value="<%= vehicle ? vehicle.year : new Date().getFullYear() %>" 
+                  min="1900" 
+                  max="<%= new Date().getFullYear() + 1 %>" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+              <div class="mt-1">
+                <select 
+                  id="type" 
+                  name="type" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="">Select Type</option>
+                  <option value="Sedan" <%= vehicle && vehicle.type === 'Sedan' ? 'selected' : '' %>>Sedan</option>
+                  <option value="SUV" <%= vehicle && vehicle.type === 'SUV' ? 'selected' : '' %>>SUV</option>
+                  <option value="Luxury" <%= vehicle && vehicle.type === 'Luxury' ? 'selected' : '' %>>Luxury</option>
+                  <option value="Sports" <%= vehicle && vehicle.type === 'Sports' ? 'selected' : '' %>>Sports</option>
+                  <option value="Convertible" <%= vehicle && vehicle.type === 'Convertible' ? 'selected' : '' %>>Convertible</option>
+                  <option value="Electric" <%= vehicle && vehicle.type === 'Electric' ? 'selected' : '' %>>Electric</option>
+                  <option value="Truck" <%= vehicle && vehicle.type === 'Truck' ? 'selected' : '' %>>Truck</option>
+                  <option value="Van" <%= vehicle && vehicle.type === 'Van' ? 'selected' : '' %>>Van</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="pricePerDay" class="block text-sm font-medium text-gray-700">Price Per Day ($)</label>
+              <div class="mt-1">
+                <input 
+                  type="number" 
+                  name="pricePerDay" 
+                  id="pricePerDay" 
+                  value="<%= vehicle ? vehicle.pricePerDay : '' %>" 
+                  min="0" 
+                  step="0.01" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+              </div>
+            </div>
+
+            <!-- Vehicle Details -->
+            <div class="sm:col-span-3">
+              <label for="seats" class="block text-sm font-medium text-gray-700">Seats</label>
+              <div class="mt-1">
+                <input 
+                  type="number" 
+                  name="seats" 
+                  id="seats" 
+                  value="<%= vehicle ? vehicle.seats : '' %>" 
+                  min="1" 
+                  max="20" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="sm:col-span-3">
+              <label for="transmission" class="block text-sm font-medium text-gray-700">Transmission</label>
+              <div class="mt-1">
+                <select 
+                  id="transmission" 
+                  name="transmission" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="">Select Transmission</option>
+                  <option value="Automatic" <%= vehicle && vehicle.transmission === 'Automatic' ? 'selected' : '' %>>Automatic</option>
+                  <option value="Manual" <%= vehicle && vehicle.transmission === 'Manual' ? 'selected' : '' %>>Manual</option>
+                  <option value="Semi-Automatic" <%= vehicle && vehicle.transmission === 'Semi-Automatic' ? 'selected' : '' %>>Semi-Automatic</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sm:col-span-3">
+              <label for="fuelType" class="block text-sm font-medium text-gray-700">Fuel Type</label>
+              <div class="mt-1">
+                <select 
+                  id="fuelType" 
+                  name="fuelType" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="">Select Fuel Type</option>
+                  <option value="Gasoline" <%= vehicle && vehicle.fuelType === 'Gasoline' ? 'selected' : '' %>>Gasoline</option>
+                  <option value="Diesel" <%= vehicle && vehicle.fuelType === 'Diesel' ? 'selected' : '' %>>Diesel</option>
+                  <option value="Electric" <%= vehicle && vehicle.fuelType === 'Electric' ? 'selected' : '' %>>Electric</option>
+                  <option value="Hybrid" <%= vehicle && vehicle.fuelType === 'Hybrid' ? 'selected' : '' %>>Hybrid</option>
+                  <option value="Plug-in Hybrid" <%= vehicle && vehicle.fuelType === 'Plug-in Hybrid' ? 'selected' : '' %>>Plug-in Hybrid</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="sm:col-span-6">
+              <label for="images" class="block text-sm font-medium text-gray-700">Vehicle Images (URLs - One per line)</label>
+              <div class="mt-1">
+                <textarea
+                  id="images"
+                  name="images"
+                  rows="3"
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
+                ><%= vehicle && vehicle.images ? vehicle.images.join('\n') : '' %></textarea>
+                <p class="mt-1 text-xs text-gray-500">Add one image URL per line or leave empty for placeholder image</p>
+              </div>
+            </div>
+
+            <div class="sm:col-span-3">
+              <label for="mileage" class="block text-sm font-medium text-gray-700">Mileage (MPG)</label>
+              <div class="mt-1">
+                <input 
+                  type="number" 
+                  name="mileage" 
+                  id="mileage" 
+                  value="<%= vehicle ? vehicle.mileage : '' %>" 
+                  min="0" 
+                  step="0.1" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  required
+                >
+              </div>
+            </div>
+
+            <!-- Vehicle Image -->
+            <div class="sm:col-span-6">
+              <label for="image" class="block text-sm font-medium text-gray-700">
+                Vehicle Image
+              </label>
+              <div class="mt-1 flex items-center">
+                <% if (vehicle && vehicle.images && vehicle.images.length > 0) { %>
+                  <div class="mr-4">
+                    <img src="<%= vehicle.images[0] %>" alt="<%= vehicle.name %>" class="h-32 w-32 object-cover rounded-md">
+                  </div>
+                <% } %>
+                <input 
+                  type="file" 
+                  id="image" 
+                  name="image" 
+                  accept="image/*" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  <%= vehicle ? '' : 'required' %>
+                >
+              </div>
+              <p class="mt-2 text-sm text-gray-500">Upload a high-quality image of the vehicle. JPG or PNG format recommended.</p>
+            </div>
+
+            <!-- Vehicle Description -->
+            <div class="sm:col-span-6">
+              <label for="description" class="block text-sm font-medium text-gray-700">
+                Description
+              </label>
+              <div class="mt-1">
+                <textarea 
+                  id="description" 
+                  name="description" 
+                  rows="5" 
+                  class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                ><%= vehicle && vehicle.description ? vehicle.description : '' %></textarea>
+              </div>
+              <p class="mt-2 text-sm text-gray-500">Brief description of the vehicle, its features, and condition.</p>
+            </div>
+
+            <!-- Features -->
+            <div class="sm:col-span-6">
+              <label class="block text-sm font-medium text-gray-700">Features</label>
+              <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <% 
+                const features = [
+                  'Air Conditioning', 'Bluetooth', 'Cruise Control', 'Navigation System',
+                  'Backup Camera', 'Sunroof', 'Leather Seats', 'Heated Seats',
+                  'Parking Sensors', 'Keyless Entry', 'Premium Sound System', 'Blind Spot Monitoring',
+                  'Lane Departure Warning', 'Adaptive Cruise Control', 'Wi-Fi Hotspot', 'Apple CarPlay',
+                  'Android Auto', 'Automatic Emergency Braking'
+                ];
+                
+                const vehicleFeatures = vehicle && vehicle.features ? vehicle.features : [];
+                
+                features.forEach(feature => { 
+                %>
+                  <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                      <input 
+                        id="feature-<%= feature.toLowerCase().replace(/\s+/g, '-') %>" 
+                        name="features" 
+                        value="<%= feature %>" 
+                        type="checkbox" 
+                        class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        <%= vehicleFeatures.includes(feature) ? 'checked' : '' %>
+                      >
+                    </div>
+                    <div class="ml-3 text-sm">
+                      <label for="feature-<%= feature.toLowerCase().replace(/\s+/g, '-') %>" class="text-gray-700"><%= feature %></label>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            </div>
+
+            <!-- Availability -->
+            <div class="sm:col-span-6">
+              <div class="flex items-start">
+                <div class="flex items-center h-5">
+                  <input 
+                    id="availability" 
+                    name="availability" 
+                    type="checkbox" 
+                    class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    <%= vehicle && vehicle.availability ? 'checked' : '' %>
+                  >
+                </div>
+                <div class="ml-3 text-sm">
+                  <label for="availability" class="font-medium text-gray-700">Available for Booking</label>
+                  <p class="text-gray-500">Vehicle can be booked by customers.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 flex justify-end">
+            <a href="/admin/vehicles" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              Cancel
+            </a>
+            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              <%= vehicle ? 'Update Vehicle' : 'Add Vehicle' %>
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    
+    // Validate form fields before submission
+    function validateForm() {
+      const make = form.querySelector('#make').value.trim();
+      const model = form.querySelector('#model').value.trim();
+      const type = form.querySelector('#type').value.trim();
+      const pricePerDay = form.querySelector('#pricePerDay').value.trim();
+      const seats = form.querySelector('#seats').value.trim();
+      const transmission = form.querySelector('#transmission').value.trim();
+      const fuelType = form.querySelector('#fuelType').value.trim();
+      
+      const errors = [];
+      
+      if (!make) errors.push('Make is required');
+      if (!model) errors.push('Model is required');
+      if (!type) errors.push('Type is required');
+      if (!pricePerDay) errors.push('Price per day is required');
+      if (!seats) errors.push('Seats information is required');
+      if (!transmission) errors.push('Transmission is required');
+      if (!fuelType) errors.push('Fuel type is required');
+      
+      if (pricePerDay && isNaN(parseFloat(pricePerDay))) {
+        errors.push('Price per day must be a valid number');
+      }
+      
+      return errors;
+    }
+    
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Client-side validation
+      const errors = validateForm();
+      
+      if (errors.length > 0) {
+        alert('Please fix the following errors:\n' + errors.join('\n'));
+        return;
+      }
+      
+      // Log form data to debug
+      console.log('Submitting vehicle form...');
+      
+      // Create FormData from the form
+      const formData = new FormData(form);
+      
+      // Debug: log form data values
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value instanceof File ? 'File: ' + value.name : value}`);
+      }
+      
+      // Submit the form using fetch
+      fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+          // Don't set Content-Type, let the browser set it with the boundary for FormData
+        },
+        body: formData
+      })
+      .then(response => {
+        if (response.redirected) {
+          window.location.href = response.url;
+          return null;
+        } else {
+          return response.json();
+        }
+      })
+      .then(data => {
+        if (data === null) {
+          return; // Already redirected
+        }
+        
+        if (data && data.success === false) {
+          alert(data.message);
+        } else if (data && data.success === true) {
+          alert('Vehicle saved successfully!');
+          window.location.href = data.redirectUrl || '/admin/vehicles';
+        } else {
+          window.location.href = '/admin/vehicles';
+        }
+      })
+      .catch(error => {
+        console.error('Error submitting form:', error);
+        alert('An error occurred while saving the vehicle. Please try again.');
+      });
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,362 @@
+<%- include('../partials/header') %>
+
+<div class="flex min-h-screen bg-gray-900">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-800 text-white">
+    <div class="p-4 bg-gray-900">
+      <h2 class="text-xl font-bold">TorqueX Admin</h2>
+    </div>
+    <nav class="p-2">
+      <ul class="space-y-1">
+        <li>
+          <a href="/admin/dashboard" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/admin/redis" class="flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-md">
+            Redis Demo
+          </a>
+        </li>
+        <li>
+          <a href="/admin/cache-viewer" class="flex items-center px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-md">
+            Cache Viewer
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 p-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-white">Redis Cache Demonstration</h1>
+      <p class="text-gray-300 mt-2">Test and monitor Redis caching performance in real-time</p>
+    </div>
+
+    <!-- Connection Status -->
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-6 stat-card">
+      <h2 class="text-xl font-semibold mb-4 flex items-center text-white">
+        <svg class="h-6 w-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Connection Status
+      </h2>
+      <div id="redis-status" class="space-y-2">
+        <div class="flex items-center">
+          <span class="w-32 font-medium text-gray-300">Status:</span>
+          <span id="status-indicator" class="px-3 py-1 rounded-full text-sm">Checking...</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-32 font-medium text-gray-300">Host:</span>
+          <span id="redis-host" class="text-gray-100">-</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-32 font-medium text-gray-300">Total Keys:</span>
+          <span id="total-keys" class="text-gray-100">-</span>
+        </div>
+        <div class="flex items-center">
+          <span class="w-32 font-medium text-gray-300">Response Time:</span>
+          <span id="ping-time" class="text-gray-100">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Demo -->
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-6 stat-card">
+      <h2 class="text-xl font-semibold mb-4 flex items-center text-white">
+        <svg class="h-6 w-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        Performance Comparison
+      </h2>
+      <p class="text-gray-300 mb-4">Click the buttons below to compare response times with and without Redis cache.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <!-- Without Cache -->
+        <div class="border-2 border-red-900 bg-red-950 rounded-lg p-4 transition hover:shadow-lg">
+          <h3 class="font-semibold text-red-400 mb-3">Without Cache (Database Query)</h3>
+          <button onclick="testWithoutCache()" class="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition mb-3">
+            Fetch Vehicles (No Cache)
+          </button>
+          <div id="no-cache-result" class="text-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-gray-400">Response Time:</span>
+              <span id="no-cache-time" class="font-bold text-red-400">-</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-400">Records:</span>
+              <span id="no-cache-count" class="font-bold text-gray-300">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- With Cache -->
+        <div class="border-2 border-green-900 bg-green-950 rounded-lg p-4 transition hover:shadow-lg">
+          <h3 class="font-semibold text-green-400 mb-3">With Cache (Redis)</h3>
+          <button onclick="testWithCache()" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition mb-3">
+            Fetch Vehicles (Cached)
+          </button>
+          <div id="cache-result" class="text-sm">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-gray-400">Response Time:</span>
+              <span id="cache-time" class="font-bold text-green-400">-</span>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-gray-400">Records:</span>
+              <span id="cache-count" class="font-bold text-gray-300">-</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-gray-400">Cache Hit:</span>
+              <span id="cache-hit" class="font-bold text-gray-300">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Summary -->
+      <div id="performance-summary" class="hidden bg-blue-950 border-l-4 border-blue-500 p-4 rounded">
+        <h4 class="font-semibold text-blue-400 mb-2">Performance Gain</h4>
+        <p class="text-sm">
+          <span class="font-bold text-2xl text-blue-400" id="speed-improvement">-</span>
+          <span class="text-gray-300">faster with Redis cache!</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Cache Statistics -->
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-6 stat-card">
+      <h2 class="text-xl font-semibold mb-4 flex items-center text-white">
+        <svg class="h-6 w-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        Current Cache Keys
+      </h2>
+      <div id="cache-keys" class="space-y-2">
+        <p class="text-gray-400">Loading cache keys...</p>
+      </div>
+      <button onclick="loadCacheKeys()" class="mt-4 btn-primary" style="background-color: #a855f7;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Refresh Cache Keys
+      </button>
+    </div>
+
+    <!-- Cache Operations -->
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 stat-card">
+      <h2 class="text-xl font-semibold mb-4 flex items-center text-white">
+        <svg class="h-6 w-6 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        Cache Operations
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <button onclick="clearVehiclesCache()" class="bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 transition">
+          Clear Vehicles Cache
+        </button>
+        <button onclick="clearDealsCache()" class="bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 transition">
+          Clear Deals Cache
+        </button>
+        <button onclick="clearAllCache()" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 transition">
+          Clear All Cache
+        </button>
+      </div>
+      <div id="operation-result" class="mt-4 hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let noCacheTime = 0;
+  let cacheTime = 0;
+
+  // Check Redis status on load
+  async function checkRedisStatus() {
+    try {
+      const start = Date.now();
+      const response = await fetch('/test/redis-status');
+      const pingTime = Date.now() - start;
+      const data = await response.json();
+      
+      const statusEl = document.getElementById('status-indicator');
+      if (data.success && data.isReady) {
+        statusEl.className = 'px-3 py-1 rounded-full text-sm bg-green-100 text-green-800';
+        statusEl.textContent = '✓ Connected';
+        document.getElementById('redis-host').textContent = 'Redis Cloud';
+        document.getElementById('ping-time').textContent = pingTime + 'ms';
+      } else {
+        statusEl.className = 'px-3 py-1 rounded-full text-sm bg-red-100 text-red-800';
+        statusEl.textContent = '✗ Disconnected';
+      }
+      
+      loadCacheKeys();
+    } catch (error) {
+      const statusEl = document.getElementById('status-indicator');
+      statusEl.className = 'px-3 py-1 rounded-full text-sm bg-red-100 text-red-800';
+      statusEl.textContent = '✗ Error';
+    }
+  }
+
+  async function testWithoutCache() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+    
+    try {
+      const start = Date.now();
+      const response = await fetch('/vehicles?nocache=true');
+      const data = await response.text();
+      noCacheTime = Date.now() - start;
+      
+      // Parse HTML to count vehicles
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, 'text/html');
+      const vehicleCards = doc.querySelectorAll('.vehicle-card, [class*="vehicle"]');
+      
+      document.getElementById('no-cache-time').textContent = noCacheTime + 'ms';
+      document.getElementById('no-cache-count').textContent = vehicleCards.length || 'N/A';
+      
+      if (cacheTime > 0) showPerformanceSummary();
+    } catch (error) {
+      document.getElementById('no-cache-time').textContent = 'Error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Fetch Vehicles (No Cache)';
+    }
+  }
+
+  async function testWithCache() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+    
+    try {
+      const start = Date.now();
+      const response = await fetch('/vehicles');
+      const data = await response.text();
+      cacheTime = Date.now() - start;
+      
+      // Parse HTML to count vehicles
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, 'text/html');
+      const vehicleCards = doc.querySelectorAll('.vehicle-card, [class*="vehicle"]');
+      
+      document.getElementById('cache-time').textContent = cacheTime + 'ms';
+      document.getElementById('cache-count').textContent = vehicleCards.length || 'N/A';
+      document.getElementById('cache-hit').textContent = cacheTime < 100 ? 'Yes ✓' : 'No (First load)';
+      
+      if (noCacheTime > 0) showPerformanceSummary();
+    } catch (error) {
+      document.getElementById('cache-time').textContent = 'Error';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Fetch Vehicles (Cached)';
+    }
+  }
+
+  function showPerformanceSummary() {
+    if (noCacheTime > 0 && cacheTime > 0) {
+      const improvement = (noCacheTime / cacheTime).toFixed(1);
+      document.getElementById('speed-improvement').textContent = improvement + 'x';
+      document.getElementById('performance-summary').classList.remove('hidden');
+    }
+  }
+
+  async function loadCacheKeys() {
+    try {
+      const response = await fetch('/test/redis-status');
+      const data = await response.json();
+      
+      const keysContainer = document.getElementById('cache-keys');
+      
+      if (!data.success || !data.keys || data.keys.length === 0) {
+        keysContainer.innerHTML = '<p class="text-gray-400">No cache keys found</p>';
+        document.getElementById('total-keys').textContent = '0';
+        return;
+      }
+      
+      document.getElementById('total-keys').textContent = data.keys.length;
+      
+      let html = '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">';
+      data.keys.slice(0, 20).forEach(key => {
+        const keyType = key.split(':')[0];
+        let color = 'bg-gray-700 text-gray-200';
+        if (keyType === 'vehicles') color = 'bg-blue-900 text-blue-200';
+        if (keyType === 'deals') color = 'bg-purple-900 text-purple-200';
+        if (keyType === 'sess') color = 'bg-green-900 text-green-200';
+        if (keyType === 'ratelimit') color = 'bg-red-900 text-red-200';
+        
+        html += `<div class="flex items-center justify-between p-2 ${color} rounded">
+          <span class="text-sm font-mono truncate">${key}</span>
+        </div>`;
+      });
+      html += '</div>';
+      
+      if (data.keys.length > 20) {
+        html += `<p class="text-sm text-gray-400 mt-2">... and ${data.keys.length - 20} more keys</p>`;
+      }
+      
+      keysContainer.innerHTML = html;
+    } catch (error) {
+      document.getElementById('cache-keys').innerHTML = '<p class="text-red-400">Error loading cache keys</p>';
+    }
+  }
+
+  async function clearVehiclesCache() {
+    if (!confirm('Clear all vehicle caches?')) return;
+    await clearCachePattern('vehicles:*');
+  }
+
+  async function clearDealsCache() {
+    if (!confirm('Clear all deal caches?')) return;
+    await clearCachePattern('deals:*');
+  }
+
+  async function clearAllCache() {
+    if (!confirm('Clear ALL cache? This will affect performance temporarily.')) return;
+    await clearCachePattern('*');
+  }
+
+  async function clearCachePattern(pattern) {
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      const response = await fetch('/admin/cache-clear', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({ pattern })
+      });
+      
+      const data = await response.json();
+      const resultEl = document.getElementById('operation-result');
+      
+      if (response.status === 403) {
+        resultEl.className = 'mt-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded';
+        resultEl.textContent = 'CSRF token validation failed. Please refresh the page and try again.';
+        setTimeout(() => window.location.reload(), 2000);
+      } else if (data.success) {
+        resultEl.className = 'mt-4 p-3 bg-green-100 border-l-4 border-green-500 text-green-700 rounded';
+        resultEl.textContent = data.message;
+      } else {
+        resultEl.className = 'mt-4 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 rounded';
+        resultEl.textContent = data.message;
+      }
+      
+      resultEl.classList.remove('hidden');
+      setTimeout(() => resultEl.classList.add('hidden'), 3000);
+      
+      loadCacheKeys();
+    } catch (error) {
+      alert('Error clearing cache: ' + error.message);
+    }
+  }
+
+  // Initialize on page load
+  checkRedisStatus();
+</script>
+
+<%- include('../partials/footer') %>
